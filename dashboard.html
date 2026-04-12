@@ -475,7 +475,7 @@ async function loadRundown(){
   try{
     const res=await fetch('/api/daily-rundown');
     const data=await res.json();
-    document.getElementById('rundown-text').textContent=data.rundown;
+    if(data.rundown)document.getElementById('rundown-text').textContent=data.rundown;
   }catch(e){
     document.getElementById('rundown-text').textContent='Could not load rundown.';
   }
