@@ -174,37 +174,39 @@ function pinPress(val) {
 .refresh-btn{background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:20px;padding:6px 14px;font-size:11px;color:#475569;cursor:pointer;font-family:-apple-system,sans-serif}
 .refresh-btn:active{background:rgba(251,191,36,.1);color:#fbbf24}
 .empty{color:#1e293b;font-size:13px;text-align:center;padding:24px 0}
-.refresh-time{font-size:10px;color:#0f172a;text-align:center;padding:4px 0 8px}
+.pin-btn{height:80px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:20px;color:#f0f0f0;font-size:24px;font-weight:500;cursor:pointer;transition:all .1s;font-family:-apple-system,sans-serif;letter-spacing:-.5px}
+.pin-btn:active{background:rgba(0,200,150,.15);border-color:rgba(0,200,150,.3);color:#00c896;transform:scale(.94)}
+    .refresh-time{font-size:10px;color:#0f172a;text-align:center;padding:4px 0 8px}
 </style>
 </head>
 <body>
 <canvas id="space"></canvas>
-  <div id="pin-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#020408;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center">
-  <div style="text-align:center;margin-bottom:32px">
-    <div style="font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:8px"><span style="color:#fff">Bright</span><span style="color:#00c896">HQ</span></div>
-    <div style="font-size:13px;color:#475569">Enter your PIN to continue</div>
+  <div id="pin-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#020408;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0">
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:6px"><span style="color:#fff">Bright</span><span style="color:#00c896">HQ</span></div>
+    <div style="font-size:12px;color:#334155;letter-spacing:.08em;text-transform:uppercase">Enter PIN to continue</div>
   </div>
-  <div style="display:flex;gap:12px;margin-bottom:24px" id="pin-dots">
-    <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2)" id="dot-0"></div>
-    <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2)" id="dot-1"></div>
-    <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2)" id="dot-2"></div>
-    <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2)" id="dot-3"></div>
+  <div style="display:flex;gap:16px;margin-bottom:40px" id="pin-dots">
+    <div id="dot-0" style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);transition:all .15s"></div>
+    <div id="dot-1" style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);transition:all .15s"></div>
+    <div id="dot-2" style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);transition:all .15s"></div>
+    <div id="dot-3" style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);transition:all .15s"></div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(3,72px);gap:12px">
-    <button onclick="pinPress('1')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">1</button>
-    <button onclick="pinPress('2')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">2</button>
-    <button onclick="pinPress('3')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">3</button>
-    <button onclick="pinPress('4')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">4</button>
-    <button onclick="pinPress('5')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">5</button>
-    <button onclick="pinPress('6')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">6</button>
-    <button onclick="pinPress('7')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">7</button>
-    <button onclick="pinPress('8')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">8</button>
-    <button onclick="pinPress('9')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">9</button>
+  <div style="display:grid;grid-template-columns:repeat(3,80px);gap:10px">
+    <button onclick="pinPress('1')" class="pin-btn">1</button>
+    <button onclick="pinPress('2')" class="pin-btn">2</button>
+    <button onclick="pinPress('3')" class="pin-btn">3</button>
+    <button onclick="pinPress('4')" class="pin-btn">4</button>
+    <button onclick="pinPress('5')" class="pin-btn">5</button>
+    <button onclick="pinPress('6')" class="pin-btn">6</button>
+    <button onclick="pinPress('7')" class="pin-btn">7</button>
+    <button onclick="pinPress('8')" class="pin-btn">8</button>
+    <button onclick="pinPress('9')" class="pin-btn">9</button>
     <div></div>
-    <button onclick="pinPress('0')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">0</button>
-    <button onclick="pinPress('⌫')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">⌫</button>
+    <button onclick="pinPress('0')" class="pin-btn">0</button>
+    <button onclick="pinPress('⌫')" class="pin-btn" style="font-size:18px">⌫</button>
   </div>
-  <div id="pin-error" style="color:#f87171;font-size:12px;margin-top:16px;opacity:0">Wrong PIN — try again</div>
+  <div id="pin-error" style="color:#f87171;font-size:12px;margin-top:24px;opacity:0;transition:opacity .2s;letter-spacing:.05em">Incorrect PIN</div>
 </div>
 <div id="app">
   <div class="pages">
