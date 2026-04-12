@@ -290,8 +290,16 @@ Always end with one useful next step or observation. Keep it real.`;
 });
 
 app.get('/api/daily-rundown', async (req, res) => {
+  const saved = loadJSON('rundown.json', { text: null, date: null, trigger: null });
+  const today = new Date().toISOString().split('T')[0];
+  const force = req.query.force === 'true';
+
+  if (!force && saved.date === today && saved.text) {
+    return res.json({ rundown: saved.text, cached: true });
+  }
+
   const data = await gatherData();
-  const prompt = `You are Max, Callum's business partner AI. Give a quick casual daily rundown of what's happening across all his projects. Keep it short — 3-4 sentences max. Be chill and friendly. Mention anything important like clients on trial ending soon, bot positions, leads that replied. End with one thing to focus on today.
+  const prompt = `You are Max, Callum's business partner AI. Give a quick casual daily rundown of what's happening across all his projects. Keep it short — 3-4 sentences max. Be chill and friendly like a mate. Mention anything important like clients on trial ending soon, bot positions, leads that replied. End with one thing to focus on today.
 
 Data:
 - BrightReply: ${data.brightreply.activeClients} active clients
@@ -309,9 +317,21 @@ Data:
     }, {
       headers: { 'x-api-key': CLAUDE_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' }
     });
-    res.json({ rundown: response.data.content[0].text });
+    const text = response.data.content[0].text;
+    saveJSON('rundown.json', { text, date: today, trigger: req.query.trigger || 'manual' });
+    res.json({ rundown: text, cached: false });
   } catch(e) {
-    res.json({ rundown: 'Could not load rundown — try refreshing.' });
+    res.json({ rundown: saved.text || 'Could not load rundown.' });
+  }
+});
+app.post('/api/rundown/refresh', async (req, res) => {
+  const { trigger } = req.body || {};
+  const url = `http://localhost:${PORT}/api/daily-rundown?force=true&trigger=${trigger||'event'}`;
+  try {
+    const result = await axios.get(url);
+    res.json({ success: true });
+  } catch(e) {
+    res.json({ success: false });
   }
 });
 
