@@ -31,9 +31,12 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 - When deal closes: waits for Twilio number assignment before sending setup guide
 - Number inventory system — buy numbers in bulk, assign when deal closes
 - Auto-buy toggle — automatically buys Twilio number when inventory empty
+- Auto lead finder — uses Google Places API to find businesses by town and type
+- Outreach limit — controls how many leads get messaged at once
 - Key files: index.js, dashboard.html, leads.json
-- Endpoints: /sms, /start-outreach, /conversations, /add-lead, /add-inventory, /assign-number, /update-status, /send-payment-link, /search, /set-auto-buy
-- Stripe link: https://buy.stripe.com/7sY3cw9EL1tj3Cj4kq83C00 (£29/month, 14-day trial)
+- Endpoints: /sms, /start-outreach, /conversations, /add-lead, /add-inventory, /assign-number, /update-status, /send-payment-link, /search, /set-auto-buy, /find-leads
+- Stripe link: £14.99/month, 14-day free trial
+- Google Places API key added as GOOGLE_PLACES_KEY in Railway
 
 ### BrightTrade V1 (trading-bot)
 - Simple daily trading bot — TQQQ/SQQQ switching
@@ -53,10 +56,19 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 ### BrightHQ (brighthq)
 - Unified dashboard for all projects
 - Max AI — business partner with memory, daily rundown, suggestions
-- Sidebar navigation, space constellation background with shooting stars
+- Right sidebar navigation with touch interactions and glow effects
+- Space constellation background with shooting stars that react to touch
+- Fireworks animation when new client lands or trade confidence hits 8+
+- Page transitions — smooth fade and slide
+- Auto lead finder built in — search by town and business type
+- Start outreach button with limit control
+- Number inventory management with auto-buy toggle
+- Client timers — trial countdowns and payment due dates
+- Trading countdown to next market open
+- Revenue history by month
 - Pages: HQ, Reply, Sales, Trade, Think
 - Key files: index.js, dashboard.html, notes.json, revenue.json, suggestions.json, memory.json, rundown.json
-- Endpoints: /api/data, /api/chat, /api/daily-rundown, /api/notes, /api/suggestions
+- Endpoints: /api/data, /api/chat, /api/daily-rundown, /api/notes, /api/suggestions, /api/find-leads, /api/start-outreach, /api/add-inventory, /api/set-auto-buy
 
 ---
 
@@ -64,31 +76,45 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 
 - Hosting: Railway (all services in one project)
 - GitHub: all repos auto-deploy on commit
-- Telegram bot: @Brighttrade_callum_bot
+- Telegram bot: @Brighttrade_callum_bot — token: 8681510450:AAGjQPhXxPWt2VVfT-1t4Wg9GqbRmOK0-XE — chat ID: 8659994812
 - Twilio numbers: +447863782938 (test/BrightReply), +447782217884 (sales outreach)
 - These are TEST numbers — never assign to real clients
 - Alpaca: paper trading account at https://paper-api.alpaca.markets
-- Stripe: live mode, £29/month product
+- Stripe: live mode, £14.99/month product
+- Google Places API: restricted to Places API only
 
 ---
 
 ## Business Model
 
 - Service: BrightReply missed call SMS
-- Price: £29/month per client
+- Price: £14.99/month per client
 - Cost: ~£1/month Twilio number per client
-- Profit: ~£28/month per client
-- Target market: hair salons, tradespeople in Wales
+- Profit: ~£13.99/month per client
+- Target market: hair salons, independent tradespeople in Wales
+- Outreach: AI cold SMS via BrightSales, limit 10 per day to start
+- Growth plan: increase outreach limit as revenue grows
 
 ---
 
 ## Key Technical Notes
 
 - When editing files: always paste the current file here first so Claude can see it
-- When Claude says "find and replace": use Ctrl+F in GitHub editor to find exact text
-- Railway variables are set in each service's Variables tab
-- All services use in-memory storage (data resets on restart) except BrightHQ which uses JSON files
+- When Claude says find and replace: use Ctrl+F in GitHub editor
+- Railway variables are set in each service Variables tab
+- All services use in-memory storage except BrightHQ which uses JSON files
 - BrightHQ filters out test numbers from client counts
+- Daily rundown is cached — only regenerates once per day or on major events
+
+---
+
+## Pending / Next Steps
+
+- Sort page colours on non-HQ pages — still a bit dark
+- Monday 9am — first outreach to 10 leads
+- Monday 2:30pm — first trading bot alerts — check Telegram
+- After first clients — increase outreach limit gradually
+- Future ideas: Google review bot, appointment reminders, social media poster
 
 ---
 
