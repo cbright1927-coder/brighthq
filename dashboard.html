@@ -279,7 +279,10 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
   <div id="hq-finder-results" style="margin-top:8px"></div>
 </div>
         <div style="display:flex;gap:8px;margin-bottom:12px">
+  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+  <input type="number" id="outreach-limit" value="10" min="1" max="100" style="width:60px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.1);border-radius:10px;padding:8px;color:#f0f0f0;font-size:13px;text-align:center;outline:none">
   <button class="chat-send" onclick="hqStartOutreach()" style="flex:1;border-radius:10px;height:40px;font-size:12px;font-weight:700;background:#00c896;color:#000;border:none;cursor:pointer">🚀 Start outreach</button>
+</div>
 </div>
 <div class="section-title">Recent deals</div>
         <div class="glass" style="padding:0 14px;margin-bottom:10px">
@@ -672,11 +675,12 @@ function renderNotes(notes){
   ).join('');
 }
 async function hqStartOutreach(){
-  if(!confirm('Start outreach to all new leads?'))return;
+  const limit = parseInt(document.getElementById('outreach-limit').value) || 10;
+  if(!confirm(`Send outreach to ${limit} new leads?`))return;
   try{
-    const res=await fetch('/api/start-outreach',{method:'POST'});
+    const res=await fetch('/api/start-outreach',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({limit})});
     const data=await res.json();
-    if(data.success)alert('Outreach started! Check Telegram for updates.');
+    if(data.success)alert(`Outreach started to ${limit} leads! Check Telegram for updates.`);
     else alert('Error starting outreach');
   }catch(e){alert('Error');}
 }
