@@ -262,9 +262,8 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
   </label>
 </div>
 </div>
-        <div class="section-title">Active clients</div>
-        <div class="glass" style="padding:0 14px;margin-bottom:10px">
-          <div id="reply-clients"><div class="empty">No clients yet</div></div>
+        <div class="section-title">Client database</div>
+<div id="client-database"><div class="empty">No clients yet</div></div>
         </div>
       </div>
     </div>
@@ -639,8 +638,32 @@ function renderAll(){
 
   const clients=d.brightreply?.clients||[];
   const inv=(appData.inventory||[]);const invEl=document.getElementById('hq-inventory-list');if(invEl){if(!inv.length){invEl.innerHTML='<div class="empty">No numbers yet</div>';}else{invEl.innerHTML=inv.map(n=>`<div class="client-row"><div><div class="client-name" style="color:${n.status==='available'?'#00c896':'#64748b'}">${n.number}</div><div class="client-num">${n.friendlyName}${n.assignedTo?' · '+n.assignedTo:''}</div></div><span class="status-pill ${n.status==='available'?'sp-active':'sp-trial'}">${n.status==='available'?'Available':'Assigned'}</span></div>`).join('');}}
-  document.getElementById('reply-clients').innerHTML=clients.length?
-    clients.map(c=>`<div class="client-row"><div><div class="client-name">${c.name}</div><div class="client-num">${c.twilioNumber||''}</div></div><span class="status-pill sp-active">Active</span></div>`).join(''):
+  const allClients=d.brightreply?.clients||[];
+const dbEl=document.getElementById('client-database');
+if(dbEl){
+  if(!allClients.length){
+    dbEl.innerHTML='<div class="empty">No clients yet</div>';
+  }else{
+    dbEl.innerHTML=allClients.map(c=>`
+      <div class="client-timer-card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <div class="ct-name">${c.name}</div>
+            <div style="font-size:11px;color:#475569">${c.twilioNumber||'No number'}</div>
+          </div>
+          <span class="status-pill ${c.active?'sp-active':'sp-trial'}">${c.active?'Active':'Inactive'}</span>
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:8px;padding:8px;background:rgba(255,255,255,.03);border-radius:8px;border:0.5px solid rgba(255,255,255,.06)">
+          💬 "${c.message||'No message set'}"
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="suggest-btn" style="background:rgba(96,165,250,.15);color:#60a5fa;flex:1" onclick="editClientMessage('${c.twilioNumber}','${(c.message||'').replace(/'/g,"\\'")}')">✏️ Edit message</button>
+          <button class="suggest-btn" style="background:rgba(248,113,113,.15);color:#f87171;flex:1" onclick="deactivateClient('${c.twilioNumber}','${c.name}')">Cancel</button>
+        </div>
+      </div>`
+    ).join('');
+  }
+}
     '<div class="empty">No clients yet</div>';
 
   const timers=d.clientsWithTimers||[];
@@ -753,6 +776,42 @@ async function hqToggleAutoBuy(enabled){
   try{
     await fetch('/api/set-auto-buy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled})});
   }catch(e){console.error(e);}
+}
+  async function editClientMessage(twilioNumber, currentMessage){
+  const newMessage = prompt(`Edit auto-reply message for ${twilioNumber}:`, currentMessage);
+  if(!newMessage || newMessage === currentMessage) return;
+  try{
+    const res = await fetch('/api/update-message', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({twilioNumber, message: newMessage})
+    });
+    const data = await res.json();
+    if(data.success){
+      alert('Message updated!');
+      loadData();
+    } else {
+      alert('Error: ' + (data.error||'unknown'));
+    }
+  }catch(e){alert('Error updating message');}
+}
+
+async function deactivateClient(twilioNumber, name){
+  if(!confirm(`Cancel service for ${name}? This will stop their missed call replies.`)) return;
+  try{
+    const res = await fetch('/api/cancel-client', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({twilioNumber})
+    });
+    const data = await res.json();
+    if(data.success){
+      alert(`${name} cancelled.`);
+      loadData();
+    } else {
+      alert('Error: ' + (data.error||'unknown'));
+    }
+  }catch(e){alert('Error cancelling client');}
 }
   async function hqAddNumber(){
   let number=document.getElementById('hq-inv-number').value.trim();
