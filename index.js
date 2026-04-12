@@ -203,8 +203,9 @@ app.post('/api/find-leads', async (req, res) => {
 });
 
 app.post('/api/start-outreach', async (req, res) => {
+  const { limit } = req.body || {};
   try {
-    await axios.post(`${BRIGHTSALES_URL}/start-outreach`, {});
+    await axios.post(`${BRIGHTSALES_URL}/start-outreach`, { limit: limit || 10 });
     res.json({ success: true });
   } catch(e) {
     res.json({ success: false, error: e.message });
