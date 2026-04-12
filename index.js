@@ -194,6 +194,14 @@ Return JSON array only:
   }
 }
 app.post('/api/find-leads', async (req, res) => {
+  app.post('/api/start-outreach', async (req, res) => {
+  try {
+    const result = await axios.post(`${BRIGHTSALES_URL}/start-outreach`, {});
+    res.json({ success: true });
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
   const { town, type } = req.body;
   try {
     const result = await axios.post(`${BRIGHTSALES_URL}/find-leads`, { town, type });
