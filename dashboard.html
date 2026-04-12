@@ -9,9 +9,10 @@
 html,body{height:100%;overflow:hidden;background:#020408}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#f0f0f0;display:flex;flex-direction:column}
 canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-#app{position:relative;z-index:1;flex:1;display:flex;flex-direction:column}
-.pages{display:flex;flex:1;transition:transform .35s cubic-bezier(.4,0,.2,1);will-change:transform}
-.page{min-width:100vw;width:100vw;flex-shrink:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+#app{position:relative;z-index:1;flex:1;display:flex;flex-direction:row;overflow:hidden}
+.pages{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+.page.active{display:block}
 .header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:24px;font-weight:900;letter-spacing:-1px}
 .logo .bright{color:#fff}
@@ -142,7 +143,10 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .sp-paid{background:rgba(96,165,250,.15);color:#60a5fa}
 .refresh-btn{background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:20px;padding:6px 14px;font-size:11px;color:#475569;cursor:pointer;font-family:-apple-system,sans-serif}
 .refresh-btn:active{background:rgba(251,191,36,.1);color:#fbbf24}
-.nav{display:flex;background:rgba(2,4,8,.96);border-top:0.5px solid rgba(255,255,255,.06);padding-top:8px;padding-bottom:env(safe-area-inset-bottom,16px);flex-shrink:0;position:relative;z-index:2}
+.sidebar{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;background:rgba(2,4,8,.96);border-right:0.5px solid rgba(255,255,255,.06);width:58px;flex-shrink:0;position:relative;z-index:2}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:9px;font-weight:500;transition:color .15s;width:100%;border-radius:8px}
+.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}
+.nav-btn span{font-size:9px}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:10px;font-weight:500;transition:color .15s}
 .nav-btn.active{color:#00c896}
 .nav-icon{width:22px;height:22px;margin-bottom:1px}
@@ -331,24 +335,22 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 
   </div>
 
-  <nav class="nav">
-    <button class="nav-btn active" onclick="goToPage(0)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>HQ
-    </button>
-    <button class="nav-btn" onclick="goToPage(1)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Reply
-    </button>
-    <button class="nav-btn" onclick="goToPage(2)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Sales
-    </button>
-    <button class="nav-btn" onclick="goToPage(3)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Trade
-    </button>
-    <button class="nav-btn" onclick="goToPage(4)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Think
-    </button>
-  </nav>
-</div>
+  </div>
+<nav class="sidebar">
+  <button class="nav-btn active" onclick="goToPage(0)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    <span>HQ</span>
+  </button>
+  <button class="nav-btn" onclick="goToPage(1)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span>Reply</span>
+  </button>
+  <button class="nav-btn" onclick="goToPage(2)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Sales</span>
+  </button>
+  <button class="nav-btn" onclick="goToPage(3)">
+    <svg class="nav-icon" viewBox="0 0 24 24
 
 <script>
 let appData = {};
@@ -441,16 +443,9 @@ setInterval(updateClock,1000); updateClock();
 
 function goToPage(n) {
   currentPage=Math.max(0,Math.min(TOTAL_PAGES-1,n));
-  document.getElementById('pages').style.transform=`translateX(-${currentPage*100}vw)`;
+  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===currentPage));
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
 }
-
-let touchStartX=0;
-document.getElementById('pages').addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
-document.getElementById('pages').addEventListener('touchend',e=>{
-  const diff=touchStartX-e.changedTouches[0].clientX;
-  if(Math.abs(diff)>50)goToPage(currentPage+(diff>0?1:-1));
-},{passive:true});
 
 function fmtCountdown(ms) {
   if (ms <= 0) return 'NOW';
