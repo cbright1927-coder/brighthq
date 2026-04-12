@@ -81,8 +81,7 @@ async function gatherData() {
 
   const replied = Object.values(conversations).filter(c =>
     c.messages && c.messages.length > 1 &&
-    c.messages[c.messages.length-1].role === 'user' &&
-    !TEST_NUMBERS.includes(Object.keys(conversations).find(k => conversations[k] === c))
+    c.messages[c.messages.length-1].role === 'user'
   ).length;
 
   const paidClients = closedDeals.filter(d => clientStatuses[d.phone] === 'paid').length;
@@ -105,15 +104,9 @@ async function gatherData() {
       nextPayment = next.toISOString();
     }
     return {
-      name: d.name,
-      type: d.type,
-      phone: d.phone,
-      twilioNumber: d.twilioNumber,
-      closedAt: d.closedAt,
-      status,
-      trialEndsAt: trialEnd.toISOString(),
-      trialMsLeft: Math.max(0, trialMsLeft),
-      trialActive: trialMsLeft > 0 && status !== 'paid',
+      name: d.name, type: d.type, phone: d.phone, twilioNumber: d.twilioNumber,
+      closedAt: d.closedAt, status, trialEndsAt: trialEnd.toISOString(),
+      trialMsLeft: Math.max(0, trialMsLeft), trialActive: trialMsLeft > 0 && status !== 'paid',
       nextPayment
     };
   });
@@ -193,15 +186,13 @@ Return JSON array only:
     return loadSuggestions();
   }
 }
-app.post('/api/find-leads', async (req, res) => {
-  app.post('/api/start-outreach', async (req, res) => {
-  try {
-    const result = await axios.post(`${BRIGHTSALES_URL}/start-outreach`, {});
-    res.json({ success: true });
-  } catch(e) {
-    res.json({ success: false, error: e.message });
-  }
+
+app.get('/api/data', async (req, res) => {
+  const data = await gatherData();
+  res.json(data);
 });
+
+app.post('/api/find-leads', async (req, res) => {
   const { town, type } = req.body;
   try {
     const result = await axios.post(`${BRIGHTSALES_URL}/find-leads`, { town, type });
@@ -210,9 +201,14 @@ app.post('/api/find-leads', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
-app.get('/api/data', async (req, res) => {
-  const data = await gatherData();
-  res.json(data);
+
+app.post('/api/start-outreach', async (req, res) => {
+  try {
+    await axios.post(`${BRIGHTSALES_URL}/start-outreach`, {});
+    res.json({ success: true });
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
 });
 
 app.get('/api/suggestions/refresh', async (req, res) => {
@@ -340,6 +336,7 @@ Data:
     res.json({ rundown: saved.text || 'Could not load rundown.' });
   }
 });
+
 app.post('/api/rundown/refresh', async (req, res) => {
   const { trigger } = req.body || {};
   const url = `http://localhost:${PORT}/api/daily-rundown?force=true&trigger=${trigger||'event'}`;
