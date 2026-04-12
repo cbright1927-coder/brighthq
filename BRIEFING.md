@@ -115,7 +115,18 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 - Monday 2:30pm — first trading bot alerts — check Telegram
 - After first clients — increase outreach limit gradually
 - Future ideas: Google review bot, appointment reminders, social media poster
+## Pending / Next Steps
 
+- Set up MongoDB Atlas for persistent storage in brightsales
+  - Currently data.json resets on every Railway redeploy
+  - Conversations, declined, deals, inventory all need to move to MongoDB
+  - Free tier on MongoDB Atlas is sufficient
+  - This is the most important technical fix before scaling outreach
+- Sort page colours on non-HQ pages — still a bit dark
+- Monday 9am — first outreach to 10 leads (DO NOT redeploy during outreach day)
+- Monday 2:30pm — first trading bot alerts — check Telegram
+- After first clients — increase outreach limit gradually
+- Future ideas: Google review bot, appointment reminders, social media poster
 ---
 
 ## Current Session
