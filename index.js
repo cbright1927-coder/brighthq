@@ -21,6 +21,7 @@ let suggestionsCol;
 let memoryCol;
 let rundownCol;
 
+const TEST_NUMBERS = ['+447863782938', '+447782217884'];
 async function connectDB() {
   try {
     const mongoClient = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
