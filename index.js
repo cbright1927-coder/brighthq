@@ -143,6 +143,7 @@ async function gatherData() {
     },
     revenue: { monthly: revenue.monthly, daily: revenue.daily.slice(-30), currentMonth: monthlyRevenue },
     clientsWithTimers,
+inventory: sales?.twilioInventory || [],
     notes: loadNotes(),
     suggestions: loadSuggestions(),
     fetchedAt: new Date().toISOString()
@@ -201,7 +202,15 @@ app.post('/api/find-leads', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
-
+app.post('/api/add-inventory', async (req, res) => {
+  const { number, friendlyName } = req.body;
+  try {
+    const result = await axios.post(`${BRIGHTSALES_URL}/add-inventory`, { number, friendlyName });
+    res.json(result.data);
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
 app.post('/api/start-outreach', async (req, res) => {
   const { limit } = req.body || {};
   try {
