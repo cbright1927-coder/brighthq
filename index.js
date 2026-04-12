@@ -202,6 +202,15 @@ app.post('/api/find-leads', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
+app.post('/api/set-auto-buy', async (req, res) => {
+  const { enabled } = req.body;
+  try {
+    const result = await axios.post(`${BRIGHTSALES_URL}/set-auto-buy`, { enabled });
+    res.json(result.data);
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
 app.post('/api/add-inventory', async (req, res) => {
   const { number, friendlyName } = req.body;
   try {
