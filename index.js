@@ -236,6 +236,15 @@ app.get('/api/suggestions/refresh', async (req, res) => {
   res.json({ suggestions });
 });
 
+app.post('/api/suggestions/:id/pin', (req, res) => {
+  const id = parseFloat(req.params.id);
+  const { pinned } = req.body;
+  const s = loadSuggestions();
+  const found = s.find(x => x.id === id);
+  if (found) found.pinned = pinned;
+  saveSuggestions(s);
+  res.json({ success: true });
+});
 app.post('/api/suggestions/:id/done', (req, res) => {
   const id = parseFloat(req.params.id);
   const s = loadSuggestions();
