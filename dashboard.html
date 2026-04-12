@@ -687,6 +687,7 @@ function renderAll(){
 
   document.getElementById('s-leads').textContent=leads;
   document.getElementById('s-replied').textContent=pipeline;
+  document.getElementById('s-contacted').textContent=d.brightsales?.contacted||0;
   document.getElementById('s-closed').textContent=d.brightsales?.closedDeals||0;
   document.getElementById('s-cancelled').textContent=d.brightsales?.cancelledClients||0;
 
