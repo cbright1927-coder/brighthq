@@ -404,7 +404,12 @@ Always end with one useful next step or observation. Keep it real.`;
 });
 
 app.get('/api/daily-rundown', async (req, res) => {
-  const saved = loadJSON('rundown.json', { text: null, date: null, trigger: null });
+  let savedRundown = { text: null, date: null, trigger: null };
+try {
+  const doc = await rundownCol.findOne({ _id: 'rundown' });
+  if(doc) savedRundown = doc;
+} catch(e) {}
+const saved = savedRundown;
   const today = new Date().toISOString().split('T')[0];
   const force = req.query.force === 'true';
 
@@ -432,7 +437,7 @@ Data:
       headers: { 'x-api-key': CLAUDE_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' }
     });
     const text = response.data.content[0].text;
-    saveJSON('rundown.json', { text, date: today, trigger: req.query.trigger || 'manual' });
+    await rundownCol.replaceOne({ _id: 'rundown' }, { _id: 'rundown', text, date: today, trigger: req.query.trigger || 'manual' }, { upsert: true });
     res.json({ rundown: text, cached: false });
   } catch(e) {
     res.json({ rundown: saved.text || 'Could not load rundown.' });
