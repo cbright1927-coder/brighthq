@@ -35,10 +35,10 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;margin-bottom:12px}
 .ov-card{border-radius:16px;padding:14px;cursor:pointer;transition:transform .15s}
 .ov-card:active{transform:scale(.97)}
-.ov-card.reply{background:linear-gradient(135deg,rgba(0,200,150,.18),rgba(0,200,150,.04));border:0.5px solid rgba(0,200,150,.35)}
-.ov-card.sales{background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(96,165,250,.04));border:0.5px solid rgba(96,165,250,.35)}
-.ov-card.trade{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(167,139,250,.04));border:0.5px solid rgba(167,139,250,.35)}
-.ov-card.think{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(251,191,36,.04));border:0.5px solid rgba(251,191,36,.35)}
+.ov-card.reply{background:linear-gradient(135deg,rgba(0,200,150,.18),rgba(0,200,150,.04));border:0.5px solid rgba(0,200,150,.35);box-shadow:0 0 24px rgba(0,200,150,.1),inset 0 0.5px 0 rgba(0,200,150,.15)}
+.ov-card.sales{background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(96,165,250,.04));border:0.5px solid rgba(96,165,250,.35);box-shadow:0 0 24px rgba(96,165,250,.1),inset 0 0.5px 0 rgba(96,165,250,.15)}
+.ov-card.trade{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(167,139,250,.04));border:0.5px solid rgba(167,139,250,.35);box-shadow:0 0 24px rgba(167,139,250,.1),inset 0 0.5px 0 rgba(167,139,250,.15)}
+.ov-card.think{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(251,191,36,.04));border:0.5px solid rgba(251,191,36,.35);box-shadow:0 0 24px rgba(251,191,36,.1),inset 0 0.5px 0 rgba(251,191,36,.15)}
 .ov-icon{font-size:22px;margin-bottom:6px}
 .ov-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;opacity:.7}
 .ov-value{font-size:26px;font-weight:900;letter-spacing:-1px}
@@ -47,7 +47,7 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .ov-card.sales .ov-label,.ov-card.sales .ov-sub{color:#60a5fa}
 .ov-card.trade .ov-label,.ov-card.trade .ov-sub{color:#a78bfa}
 .ov-card.think .ov-label,.ov-card.think .ov-sub{color:#fbbf24}
-.rev-card{border-radius:16px;padding:16px;background:linear-gradient(135deg,rgba(0,200,150,.12),rgba(96,165,250,.06));border:0.5px solid rgba(0,200,150,.2);margin:0 16px 12px}
+.rev-card{border-radius:16px;padding:16px;background:linear-gradient(135deg,rgba(0,200,150,.14),rgba(96,165,250,.07));border:0.5px solid rgba(0,200,150,.25);margin:0 16px 12px;box-shadow:0 0 30px rgba(0,200,150,.08),inset 0 0.5px 0 rgba(0,200,150,.2)}
 .rev-label{font-size:11px;color:#00c896;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:4px}
 .rev-amount{font-size:36px;font-weight:900;letter-spacing:-2px;color:#fff}
 .rev-sub{font-size:12px;color:#475569;margin-top:2px}
@@ -65,7 +65,7 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .cd-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:#a78bfa}
 .cd-sub{font-size:11px;color:#475569}
 .cd-time{font-size:20px;font-weight:900;letter-spacing:-1px;color:#a78bfa}
-.rundown-card{margin:0 16px 12px;border-radius:14px;padding:14px;background:rgba(0,200,150,.06);border:0.5px solid rgba(0,200,150,.15)}
+.rundown-card{margin:0 16px 12px;border-radius:14px;padding:14px;background:rgba(0,200,150,.07);border:0.5px solid rgba(0,200,150,.2);box-shadow:0 0 20px rgba(0,200,150,.06),inset 0 0.5px 0 rgba(0,200,150,.1)}
 .rundown-label{font-size:10px;color:#00c896;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .rundown-text{font-size:13px;color:#94a3b8;line-height:1.7}
 .trade-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;margin-bottom:12px}
@@ -398,7 +398,22 @@ let appData={};
 let currentPage=0;
 const TOTAL_PAGES=5;
 let tradeCountdownMs=0;
+let fireworks=[];
+let prevClients=0;
+let prevTradeProfit=null;
 
+function launchFireworks(){
+  for(let i=0;i<12;i++){
+    const x=Math.random()*W;
+    const y=Math.random()*H*.6;
+    const color=['#00c896','#a78bfa','#60a5fa','#fbbf24','#f0abfc','#ffffff'][Math.floor(Math.random()*6)];
+    for(let j=0;j<40;j++){
+      const angle=Math.random()*Math.PI*2;
+      const speed=2+Math.random()*6;
+      fireworks.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,alpha:1,color,r:Math.random()*2+1,gravity:0.08});
+    }
+  }
+}
 const canvas=document.getElementById('space');
 const ctx=canvas.getContext('2d');
 let stars=[],shootingStars=[];
@@ -467,6 +482,15 @@ function drawFrame(){
     ctx.globalAlpha=s.alpha*.5;ctx.lineWidth=s.width*2.5;ctx.stroke();
     ctx.globalAlpha=1;
     s.x+=s.vx;s.y+=s.vy;s.alpha-=.016;
+  });
+  fireworks=fireworks.filter(f=>f.alpha>0.02);
+  fireworks.forEach(f=>{
+    f.x+=f.vx;f.y+=f.vy;
+    f.vy+=f.gravity;
+    f.vx*=.98;f.vy*=.98;
+    f.alpha-=.012;
+    ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    ctx.fillStyle=f.color;ctx.globalAlpha=f.alpha;ctx.fill();ctx.globalAlpha=1;
   });
   requestAnimationFrame(drawFrame);
 }
@@ -660,6 +684,20 @@ function renderAll(){
   document.getElementById('t1-reason').textContent=v1?.reason||'';
   document.getElementById('t2-reason').textContent=v2?.reason||'';
 
+  const currentClients=d.brightreply?.activeClients||0;
+  if(prevClients>0&&currentClients>prevClients){
+    launchFireworks();
+    setTimeout(launchFireworks,600);
+    setTimeout(launchFireworks,1200);
+  }
+  prevClients=currentClients;
+  const v1pos=d.trading?.v1?.position;
+  const v1conf=d.trading?.v1?.confidence||0;
+  if(v1pos&&v1conf>=8&&prevTradeProfit!==v1pos){
+    launchFireworks();
+    setTimeout(launchFireworks,800);
+    prevTradeProfit=v1pos;
+  }
   renderSuggestions(d.suggestions||[]);
   renderNotes(d.notes||[]);
 }
