@@ -11,26 +11,75 @@ const BRIGHTTRADE_V1_URL = process.env.BRIGHTTRADE_V1_URL;
 const BRIGHTTRADE_V2_URL = process.env.BRIGHTTRADE_V2_URL;
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 
-const NOTES_FILE = 'notes.json';
-const REVENUE_FILE = 'revenue.json';
-const SUGGESTIONS_FILE = 'suggestions.json';
-const MEMORY_FILE = 'memory.json';
+const { MongoClient } = require('mongodb');
+const MONGODB_URI = process.env.MONGODB_URI;
 
-const TEST_NUMBERS = ['+447863782938', '+447782217884'];
+let db;
+let notesCol;
+let revenueCol;
+let suggestionsCol;
+let memoryCol;
+let rundownCol;
 
-function loadJSON(file, def) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
-  catch(e) { return def; }
+async function connectDB() {
+  try {
+    const mongoClient = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+    await mongoClient.connect();
+    db = mongoClient.db('brighthq');
+    notesCol = db.collection('notes');
+    revenueCol = db.collection('revenue');
+    suggestionsCol = db.collection('suggestions');
+    memoryCol = db.collection('memory');
+    rundownCol = db.collection('rundown');
+    console.log('MongoDB connected');
+  } catch(e) {
+    console.error('MongoDB error:', e.message);
+  }
 }
-function saveJSON(file, data) { fs.writeFileSync(file, JSON.stringify(data, null, 2)); }
-function loadNotes() { return loadJSON(NOTES_FILE, []); }
-function saveNotes(n) { saveJSON(NOTES_FILE, n); }
-function loadRevenue() { return loadJSON(REVENUE_FILE, { monthly: {}, daily: [] }); }
-function saveRevenue(r) { saveJSON(REVENUE_FILE, r); }
-function loadSuggestions() { return loadJSON(SUGGESTIONS_FILE, []); }
-function saveSuggestions(s) { saveJSON(SUGGESTIONS_FILE, s); }
-function loadMemory() { return loadJSON(MEMORY_FILE, []); }
-function saveMemory(m) { saveJSON(MEMORY_FILE, m); }
+
+async function loadNotes() {
+  try { return await notesCol.find({}).sort({ createdAt: -1 }).toArray(); }
+  catch(e) { return []; }
+}
+async function saveNotes(notes) {
+  try {
+    await notesCol.deleteMany({});
+    if(notes.length) await notesCol.insertMany(notes);
+  } catch(e) { console.error('Save notes error:', e.message); }
+}
+async function loadRevenue() {
+  try {
+    const doc = await revenueCol.findOne({ _id: 'revenue' });
+    return doc || { monthly: {}, daily: [] };
+  } catch(e) { return { monthly: {}, daily: [] }; }
+}
+async function saveRevenue(r) {
+  try {
+    await revenueCol.replaceOne({ _id: 'revenue' }, { _id: 'revenue', ...r }, { upsert: true });
+  } catch(e) { console.error('Save revenue error:', e.message); }
+}
+async function loadSuggestions() {
+  try {
+    const doc = await suggestionsCol.findOne({ _id: 'suggestions' });
+    return doc?.data || [];
+  } catch(e) { return []; }
+}
+async function saveSuggestions(s) {
+  try {
+    await suggestionsCol.replaceOne({ _id: 'suggestions' }, { _id: 'suggestions', data: s }, { upsert: true });
+  } catch(e) { console.error('Save suggestions error:', e.message); }
+}
+async function loadMemory() {
+  try {
+    const doc = await memoryCol.findOne({ _id: 'memory' });
+    return doc?.data || [];
+  } catch(e) { return []; }
+}
+async function saveMemory(m) {
+  try {
+    await memoryCol.replaceOne({ _id: 'memory' }, { _id: 'memory', data: m }, { upsert: true });
+  } catch(e) { console.error('Save memory error:', e.message); }
+}
 
 function nextTradingDay() {
   const now = new Date();
@@ -410,4 +459,8 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('BrightHQ running on port', PORT));
+async function start() {
+  await connectDB();
+  app.listen(PORT, () => console.log('BrightHQ running on port', PORT));
+}
+start();
