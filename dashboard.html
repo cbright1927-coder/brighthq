@@ -240,6 +240,15 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
         </div>
         <div class="section-title">Client timers</div>
         <div id="client-timers" style="margin-bottom:10px"><div class="empty">No clients yet</div></div>
+        <div class="section-title">Number inventory</div>
+<div class="glass" style="padding:14px;margin-bottom:12px">
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <input class="chat-inp" id="hq-inv-number" placeholder="+447700900123" style="border-radius:10px">
+    <button class="chat-send" onclick="hqAddNumber()" style="border-radius:10px;width:42px;height:42px;flex-shrink:0">+</button>
+  </div>
+  <button class="refresh-btn" style="width:100%;margin-bottom:10px;text-align:center" onclick="window.open('https://console.twilio.com/us1/develop/phone-numbers/search','_blank')">Buy new number in Twilio 🔗</button>
+  <div id="hq-inventory-list"><div class="empty">Loading...</div></div>
+</div>
         <div class="section-title">Active clients</div>
         <div class="glass" style="padding:0 14px;margin-bottom:10px">
           <div id="reply-clients"><div class="empty">No clients yet</div></div>
@@ -592,6 +601,7 @@ function renderAll(){
   document.getElementById('r-revenue').textContent='£'+revenue;
 
   const clients=d.brightreply?.clients||[];
+  const inv=(appData.inventory||[]);const invEl=document.getElementById('hq-inventory-list');if(invEl){if(!inv.length){invEl.innerHTML='<div class="empty">No numbers yet</div>';}else{invEl.innerHTML=inv.map(n=>`<div class="client-row"><div><div class="client-name" style="color:${n.status==='available'?'#00c896':'#64748b'}">${n.number}</div><div class="client-num">${n.friendlyName}${n.assignedTo?' · '+n.assignedTo:''}</div></div><span class="status-pill ${n.status==='available'?'sp-active':'sp-trial'}">${n.status==='available'?'Available':'Assigned'}</span></div>`).join('');}}
   document.getElementById('reply-clients').innerHTML=clients.length?
     clients.map(c=>`<div class="client-row"><div><div class="client-name">${c.name}</div><div class="client-num">${c.twilioNumber||''}</div></div><span class="status-pill sp-active">Active</span></div>`).join(''):
     '<div class="empty">No clients yet</div>';
@@ -674,7 +684,19 @@ function renderNotes(notes){
     </div>`
   ).join('');
 }
-async function hqStartOutreach(){
+async function hqAddNumber(){
+  let number=document.getElementById('hq-inv-number').value.trim();
+  if(!number){alert('Enter a number');return;}
+  number=number.replace(/\s/g,'');
+  if(!number.startsWith('+'))number='+44'+number.replace(/^0/,'');
+  try{
+    const res=await fetch('/api/add-inventory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({number,friendlyName:number})});
+    const data=await res.json();
+    if(data.success){document.getElementById('hq-inv-number').value='';loadData();}
+    else alert(data.error||'Error adding number');
+  }catch(e){alert('Error');}
+}
+  async function hqStartOutreach(){
   const limit = parseInt(document.getElementById('outreach-limit').value) || 10;
   if(!confirm(`Send outreach to ${limit} new leads?`))return;
   try{
