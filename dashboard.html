@@ -18,7 +18,8 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .nav-btn span{font-size:9px}
 .nav-icon{width:22px;height:22px;margin-bottom:1px}
 .pages{flex:1;position:relative;overflow:hidden}
-.page{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+.page{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;opacity:0;transform:translateX(12px);transition:opacity .25s ease,transform .25s ease}
+.page.active{display:block;opacity:1;transform:translateX(0)}
 .page.active{display:block}
 .header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:22px;font-weight:900;letter-spacing:-1px}
@@ -441,12 +442,25 @@ function goToPage(n){
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
 }
 
-function fmtCountdown(ms){
-  if(ms<=0)return 'NOW';
-  const s=Math.floor(ms/1000);
-  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
-  if(h>=24){const d=Math.floor(h/24),hr=h%24;return `${d}d ${hr}h`;}
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+function goToPage(n){
+  const prev=document.querySelector('.page.active');
+  if(prev){
+    prev.style.opacity='0';
+    prev.style.transform='translateX(-12px)';
+    setTimeout(()=>{
+      prev.classList.remove('active');
+      prev.style.opacity='';
+      prev.style.transform='';
+      currentPage=Math.max(0,Math.min(TOTAL_PAGES-1,n));
+      const next=document.querySelectorAll('.page')[currentPage];
+      next.classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
+    },200);
+  } else {
+    currentPage=Math.max(0,Math.min(TOTAL_PAGES-1,n));
+    document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===currentPage));
+    document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
+  }
 }
 
 function fmtDuration(ms){
