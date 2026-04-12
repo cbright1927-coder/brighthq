@@ -193,7 +193,15 @@ Return JSON array only:
     return loadSuggestions();
   }
 }
-
+app.post('/api/find-leads', async (req, res) => {
+  const { town, type } = req.body;
+  try {
+    const result = await axios.post(`${BRIGHTSALES_URL}/find-leads`, { town, type });
+    res.json(result.data);
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
 app.get('/api/data', async (req, res) => {
   const data = await gatherData();
   res.json(data);
