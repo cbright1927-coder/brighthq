@@ -64,7 +64,7 @@ async function fetchSafe(url, path = '') {
 
 async function gatherData() {
   const [reply, sales, tradeV1, tradeV2] = await Promise.all([
-    fetchSafe(BRIGHTREPLY_URL, '/clients'),
+    fetchSafe(BRIGHTREPLY_URL, '/clients-full'),
     fetchSafe(BRIGHTSALES_URL, '/conversations'),
     fetchSafe(BRIGHTTRADE_V1_URL, '/api/data'),
     fetchSafe(BRIGHTTRADE_V2_URL, '/api/state')
@@ -206,6 +206,15 @@ app.post('/api/set-auto-buy', async (req, res) => {
   const { enabled } = req.body;
   try {
     const result = await axios.post(`${BRIGHTSALES_URL}/set-auto-buy`, { enabled });
+    res.json(result.data);
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
+app.post('/api/update-message', async (req, res) => {
+  const { twilioNumber, message } = req.body;
+  try {
+    const result = await axios.post(`${BRIGHTREPLY_URL}/update-message`, { twilioNumber, message });
     res.json(result.data);
   } catch(e) {
     res.json({ success: false, error: e.message });
