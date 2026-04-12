@@ -278,7 +278,10 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
   <button class="chat-send" id="hq-finder-btn" onclick="hqFindLeads()" style="width:100%;border-radius:10px;height:40px;font-size:12px;font-weight:700">🔍 Find leads</button>
   <div id="hq-finder-results" style="margin-top:8px"></div>
 </div>
-        <div class="section-title">Recent deals</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+  <button class="chat-send" onclick="hqStartOutreach()" style="flex:1;border-radius:10px;height:40px;font-size:12px;font-weight:700;background:#00c896;color:#000;border:none;cursor:pointer">🚀 Start outreach</button>
+</div>
+<div class="section-title">Recent deals</div>
         <div class="glass" style="padding:0 14px;margin-bottom:10px">
           <div id="sales-deals"><div class="empty">No deals yet — outreach starts Monday!</div></div>
         </div>
@@ -505,6 +508,9 @@ async function loadData(){
     const res=await fetch('/api/data');
     appData=await res.json();
     renderAll();
+    if(appData.trading?.nextTradingMs){
+      tradeCountdownMs=appData.trading.nextTradingMs;
+    }
     document.getElementById('refresh-time').textContent='Updated '+new Date().toLocaleTimeString();
   }catch(e){console.error(e);}
 }
@@ -652,7 +658,16 @@ function renderNotes(notes){
     </div>`
   ).join('');
 }
-async function hqFindLeads(){
+async function hqStartOutreach(){
+  if(!confirm('Start outreach to all new leads?'))return;
+  try{
+    const res=await fetch('/api/start-outreach',{method:'POST'});
+    const data=await res.json();
+    if(data.success)alert('Outreach started! Check Telegram for updates.');
+    else alert('Error starting outreach');
+  }catch(e){alert('Error');}
+}
+  async function hqFindLeads(){
   const town = document.getElementById('hq-finder-town').value.trim();
   const type = document.getElementById('hq-finder-type').value;
   const btn = document.getElementById('hq-finder-btn');
@@ -691,7 +706,7 @@ async function hqFindLeads(){
           `<div style="font-size:12px;color:#00c896;padding:3px 0;border-bottom:0.5px solid rgba(255,255,255,.05)">✓ ${l.name}</div>`
         ).join('');
       }
-      loadData();
+      setTimeout(loadData, 1000);
     }else{
       error.textContent=data.error||'Something went wrong';
       error.style.display='block';
