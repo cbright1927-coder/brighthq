@@ -115,7 +115,7 @@ async function fetchSafe(url, path = '') {
 async function gatherData() {
   const [reply, sales, tradeV1, tradeV2] = await Promise.all([
     fetchSafe(BRIGHTREPLY_URL, '/clients-full'),
-    fetchSafe(BRIGHTSALES_URL, '/conversations'),
+    fetchSafe(BRIGHTSALES_URL, `/conversations?key=${process.env.BRIGHTSALES_KEY}`),
     fetchSafe(BRIGHTTRADE_V1_URL, '/api/data'),
     fetchSafe(BRIGHTTRADE_V2_URL, '/api/state')
   ]);
