@@ -88,7 +88,7 @@ async function gatherData() {
   const trialClients = closedDeals.filter(d =>
     clientStatuses[d.phone] === 'trial' || clientStatuses[d.phone] === 'pending'
   ).length;
-  const monthlyRevenue = paidClients * 29;
+  const monthlyRevenue = paidClients * 14.99;
 
   const clientsWithTimers = closedDeals.map(d => {
     const closedAt = new Date(d.closedAt);
