@@ -636,6 +636,123 @@ function renderAll(){
   document.getElementById('r-total').textContent=d.brightreply?.totalClients||0;
   document.getElementById('r-revenue').textContent='£'+revenue;
 
+  const inv=(appData.inventory||[]);
+  const invEl=document.getElementById('hq-inventory-list');
+  if(invEl){
+    if(!inv.length){invEl.innerHTML='<div class="empty">No numbers yet</div>';}
+    else{invEl.innerHTML=inv.map(n=>`<div class="client-row"><div><div class="client-name" style="color:${n.status==='available'?'#00c896':'#64748b'}">${n.number}</div><div class="client-num">${n.friendlyName}${n.assignedTo?' · '+n.assignedTo:''}</div></div><span class="status-pill ${n.status==='available'?'sp-active':'sp-trial'}">${n.status==='available'?'Available':'Assigned'}</span></div>`).join('');}
+  }
+
+  const allClients=d.brightreply?.clients||[];
+  const dbEl=document.getElementById('client-database');
+  if(dbEl){
+    if(!allClients.length){
+      dbEl.innerHTML='<div class="empty">No clients yet</div>';
+    }else{
+      dbEl.innerHTML=allClients.map(c=>`
+        <div class="client-timer-card" style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <div class="ct-name">${c.name}</div>
+              <div style="font-size:11px;color:#475569">${c.twilioNumber||'No number'}</div>
+            </div>
+            <span class="status-pill ${c.active?'sp-active':'sp-trial'}">${c.active?'Active':'Inactive'}</span>
+          </div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:8px;padding:8px;background:rgba(255,255,255,.03);border-radius:8px;border:0.5px solid rgba(255,255,255,.06)">
+            💬 "${c.message||'No message set'}"
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="suggest-btn" style="background:rgba(96,165,250,.15);color:#60a5fa;flex:1" onclick="editClientMessage('${c.twilioNumber}','${(c.message||'').replace(/'/g,"\\'")}')">✏️ Edit message</button>
+            <button class="suggest-btn" style="background:rgba(248,113,113,.15);color:#f87171;flex:1" onclick="deactivateClient('${c.twilioNumber}','${c.name}')">Cancel</button>
+          </div>
+        </div>`
+      ).join('');
+    }
+  }
+
+  const timers=d.clientsWithTimers||[];
+  const timersEl=document.getElementById('client-timers');
+  if(!timers.length){timersEl.innerHTML='<div class="empty">No clients yet</div>';}
+  else{
+    timersEl.innerHTML=timers.map(c=>{
+      const trialPct=c.trialActive?Math.max(0,Math.min(100,(c.trialMsLeft/(14*24*60*60*1000))*100)):0;
+      const trialColor=trialPct>50?'#00c896':trialPct>20?'#fbbf24':'#f87171';
+      let paymentRow='';
+      if(c.nextPayment){
+        const payMs=new Date(c.nextPayment)-new Date();
+        paymentRow=`<div class="ct-row"><span class="ct-label">Next payment</span><span class="ct-val" style="color:#60a5fa">${fmtDuration(payMs)}</span></div>`;
+      }
+      return`<div class="client-timer-card">
+        <div class="ct-name">${c.name}</div>
+        ${c.trialActive?`<div class="ct-row"><span class="ct-label">Trial ends</span><span class="ct-val" style="color:${trialColor}">${fmtDuration(c.trialMsLeft)}</span></div><div class="ct-bar"><div class="ct-fill" style="width:${trialPct}%;background:${trialColor}"></div></div>`:''}
+        ${paymentRow}
+        <div class="ct-row" style="margin-top:4px"><span class="ct-label">Status</span><span class="ct-val" style="color:${c.status==='paid'?'#60a5fa':c.status==='trial'?'#a78bfa':'#64748b'}">${c.status}</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('s-leads').textContent=leads;
+  document.getElementById('s-replied').textContent=pipeline;
+  document.getElementById('s-closed').textContent=d.brightsales?.closedDeals||0;
+  document.getElementById('s-cancelled').textContent=d.brightsales?.cancelledClients||0;
+
+  const deals=d.brightsales?.recentDeals||[];
+  document.getElementById('sales-deals').innerHTML=deals.length?
+    deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><span class="status-pill sp-trial">Trial</span></div>`).join(''):
+    '<div class="empty">No deals yet — outreach starts Monday!</div>';
+
+  const t1el=document.getElementById('t1-pos'),t2el=document.getElementById('t2-pos');
+  t1el.textContent=v1?.position||'--';
+  t1el.className='trade-pos '+(v1?.position==='TQQQ'?'bull':v1?.position==='SQQQ'?'bear':'none');
+  t2el.textContent=v2?.position||'--';
+  t2el.className='trade-pos '+(v2?.position==='TQQQ'?'bull':v2?.position==='SQQQ'?'bear':'none');
+  document.getElementById('t1-conf').textContent=v1?.confidence?`Confidence: ${v1.confidence}/10`:'Runs Mon 2:30pm UK';
+  document.getElementById('t2-conf').textContent=v2?.confidence?`Confidence: ${v2.confidence}/10`:'Runs Mon 2:30pm UK';
+  document.getElementById('t1-bar').style.width=(v1?.confidence||0)*10+'%';
+  document.getElementById('t2-bar').style.width=(v2?.confidence||0)*10+'%';
+  document.getElementById('t1-reason').textContent=v1?.reason||'';
+  document.getElementById('t2-reason').textContent=v2?.reason||'';
+
+  const currentClients=d.brightreply?.activeClients||0;
+  if(prevClients>0&&currentClients>prevClients){
+    launchFireworks();
+    setTimeout(launchFireworks,600);
+    setTimeout(launchFireworks,1200);
+  }
+  prevClients=currentClients;
+  const v1pos=d.trading?.v1?.position;
+  const v1conf=d.trading?.v1?.confidence||0;
+  if(v1pos&&v1conf>=8&&prevTradeProfit!==v1pos){
+    launchFireworks();
+    setTimeout(launchFireworks,800);
+    prevTradeProfit=v1pos;
+  }
+
+  renderSuggestions(d.suggestions||[]);
+  renderNotes(d.notes||[]);
+}
+  }
+
+  const monthlyData=d.revenue?.monthly||{};
+  const sortedMonths=Object.entries(monthlyData).sort((a,b)=>a[0].localeCompare(b[0])).slice(-6);
+  const currentMonth=new Date().toISOString().slice(0,7);
+  const monthsEl=document.getElementById('rev-months');
+  monthsEl.innerHTML=sortedMonths.map(([m,v])=>
+    `<div class="rev-month ${m===currentMonth?'current':''}">
+      <div class="rev-month-label">${m.slice(5)}</div>
+      <div class="rev-month-val">£${v}</div>
+    </div>`
+  ).join('')||'<div style="font-size:11px;color:#1e293b;padding:8px">Revenue history will appear here</div>';
+
+  const v1=d.trading?.v1,v2=d.trading?.v2;
+  const pos=v1?.position||v2?.position||'--';
+  document.getElementById('ov-trade').textContent=pos;
+  document.getElementById('ov-trade-sub').textContent=pos==='TQQQ'?'bullish':pos==='SQQQ'?'bearish':'market closed';
+
+  document.getElementById('r-active').textContent=d.brightreply?.activeClients||0;
+  document.getElementById('r-total').textContent=d.brightreply?.totalClients||0;
+  document.getElementById('r-revenue').textContent='£'+revenue;
+
   const clients=d.brightreply?.clients||[];
   const inv=(appData.inventory||[]);const invEl=document.getElementById('hq-inventory-list');if(invEl){if(!inv.length){invEl.innerHTML='<div class="empty">No numbers yet</div>';}else{invEl.innerHTML=inv.map(n=>`<div class="client-row"><div><div class="client-name" style="color:${n.status==='available'?'#00c896':'#64748b'}">${n.number}</div><div class="client-num">${n.friendlyName}${n.assignedTo?' · '+n.assignedTo:''}</div></div><span class="status-pill ${n.status==='available'?'sp-active':'sp-trial'}">${n.status==='available'?'Available':'Assigned'}</span></div>`).join('');}}
   const allClients=d.brightreply?.clients||[];
