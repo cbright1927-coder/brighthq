@@ -258,6 +258,26 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
             <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Cancelled</div><div style="font-size:18px;font-weight:900;color:#f87171" id="s-cancelled">0</div></div>
           </div>
         </div>
+        <div class="section-title">Auto find leads</div>
+<div class="glass" style="padding:14px;margin-bottom:12px">
+  <div id="hq-finder-success" style="display:none;font-size:12px;color:#00c896;margin-bottom:8px;padding:8px;background:rgba(0,200,150,.08);border-radius:8px"></div>
+  <div id="hq-finder-error" style="display:none;font-size:12px;color:#f87171;margin-bottom:8px;padding:8px;background:rgba(248,113,113,.08);border-radius:8px"></div>
+  <input class="chat-inp" id="hq-finder-town" placeholder="Town e.g. Cwmbran, Newport..." style="margin-bottom:8px;border-radius:10px">
+  <select class="note-cat-select" id="hq-finder-type">
+    <option value="Hair salon">Hair salon</option>
+    <option value="Barber">Barber</option>
+    <option value="Beauty salon">Beauty salon</option>
+    <option value="Nail salon">Nail salon</option>
+    <option value="Plumber">Plumber</option>
+    <option value="Electrician">Electrician</option>
+    <option value="Garage">Garage</option>
+    <option value="Restaurant">Restaurant</option>
+    <option value="Takeaway">Takeaway</option>
+    <option value="Pub">Pub</option>
+  </select>
+  <button class="chat-send" id="hq-finder-btn" onclick="hqFindLeads()" style="width:100%;border-radius:10px;height:40px;font-size:12px;font-weight:700">🔍 Find leads</button>
+  <div id="hq-finder-results" style="margin-top:8px"></div>
+</div>
         <div class="section-title">Recent deals</div>
         <div class="glass" style="padding:0 14px;margin-bottom:10px">
           <div id="sales-deals"><div class="empty">No deals yet — outreach starts Monday!</div></div>
@@ -632,7 +652,58 @@ function renderNotes(notes){
     </div>`
   ).join('');
 }
+async function hqFindLeads(){
+  const town = document.getElementById('hq-finder-town').value.trim();
+  const type = document.getElementById('hq-finder-type').value;
+  const btn = document.getElementById('hq-finder-btn');
+  const results = document.getElementById('hq-finder-results');
+  const success = document.getElementById('hq-finder-success');
+  const error = document.getElementById('hq-finder-error');
 
+  if(!town){alert('Enter a town first');return;}
+
+  btn.textContent='🔍 Searching...';
+  btn.disabled=true;
+  results.innerHTML='';
+  success.style.display='none';
+  error.style.display='none';
+
+  try{
+    const res=await fetch(`${appData.urls?.brightsales||''}/find-leads`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({town,type})
+    });
+
+    // Call directly via HQ proxy
+    const proxyRes = await fetch('/api/find-leads',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({town,type})
+    });
+    const data=await proxyRes.json();
+
+    if(data.success){
+      success.textContent=`Found ${data.found} new leads in ${town}! Skipped ${data.skipped}.`;
+      success.style.display='block';
+      if(data.leads.length){
+        results.innerHTML=data.leads.map(l=>
+          `<div style="font-size:12px;color:#00c896;padding:3px 0;border-bottom:0.5px solid rgba(255,255,255,.05)">✓ ${l.name}</div>`
+        ).join('');
+      }
+      loadData();
+    }else{
+      error.textContent=data.error||'Something went wrong';
+      error.style.display='block';
+    }
+  }catch(e){
+    error.textContent='Error — try again';
+    error.style.display='block';
+  }
+
+  btn.textContent='🔍 Find leads';
+  btn.disabled=false;
+}
 async function refreshSuggestions(){
   document.getElementById('suggestions-list').innerHTML='<div class="empty" style="color:#fbbf24">Max is thinking...</div>';
   try{
