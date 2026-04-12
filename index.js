@@ -163,7 +163,7 @@ Business data:
 - Monthly revenue: £${data.brightsales.monthlyRevenue}
 - Clients on trial: ${data.brightsales.trialClients}
 
-Give 3 specific actionable suggestions. Be direct and casual. No fluff.
+Give 3 specific actionable suggestions that are NEW and not already covered in these notes: ${notes} — and not already done: ${doneItems}. Be direct and casual. No fluff.
 
 Return JSON array only:
 [{"title":"short title","suggestion":"2-3 sentence suggestion","priority":"high/medium/low","category":"sales/trading/operations/growth"}]`;
@@ -179,6 +179,8 @@ Return JSON array only:
     const raw = res.data.content[0].text.replace(/```json|```/g, '').trim();
     const suggestions = JSON.parse(raw);
     const existing = loadSuggestions();
+    const doneItems = existing.filter(s => s.status === 'done').map(s => s.title).join(', ') || 'none';
+const notes = loadNotes().slice(0, 10).map(n => n.text).join(' | ') || 'none';
     const newOnes = suggestions.map(s => ({ ...s, id: Date.now() + Math.random(), createdAt: new Date().toISOString(), status: 'active' }));
     const merged = [...newOnes, ...existing.filter(s => s.status === 'done')].slice(0, 20);
     saveSuggestions(merged);
