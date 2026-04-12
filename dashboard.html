@@ -685,9 +685,11 @@ async function sendToChat(msg) {
   messages.scrollTop=messages.scrollHeight;
 }
 
-loadData();
-loadRundown();
-setInterval(loadData,30000);
+window.addEventListener('load', () => {
+  loadData();
+  loadRundown();
+  setInterval(loadData, 30000);
+});
 </script>
 </body>
 </html>
