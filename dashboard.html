@@ -13,7 +13,36 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .sidebar{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px 0;background:rgba(2,4,8,.96);border-left:0.5px solid rgba(255,255,255,.06);width:58px;flex-shrink:0;position:relative;z-index:2}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:9px;font-weight:500;transition:all .2s;width:100%;border-radius:8px;-webkit-tap-highlight-color:transparent}
 .nav-btn:hover,.nav-btn:active{color:#00c896;background:rgba(0,200,150,.08);transform:scale(1.15)}
-.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}
+.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}const CORRECT_PIN = '1234';
+let pinEntry = '';
+
+function pinPress(val) {
+  if(val === '') return;
+  if(val === '⌫') {
+    pinEntry = pinEntry.slice(0, -1);
+  } else {
+    if(pinEntry.length >= 4) return;
+    pinEntry += val;
+  }
+  for(let i=0; i<4; i++) {
+    const dot = document.getElementById('dot-'+i);
+    dot.style.background = i < pinEntry.length ? '#00c896' : 'rgba(255,255,255,.1)';
+  }
+  if(pinEntry.length === 4) {
+    if(pinEntry === CORRECT_PIN) {
+      document.getElementById('pin-screen').style.display = 'none';
+    } else {
+      document.getElementById('pin-error').style.opacity = '1';
+      setTimeout(() => {
+        pinEntry = '';
+        for(let i=0; i<4; i++) {
+          document.getElementById('dot-'+i).style.background = 'rgba(255,255,255,.1)';
+        }
+        document.getElementById('pin-error').style.opacity = '0';
+      }, 1000);
+    }
+  }
+}
 .nav-btn.active .nav-icon{filter:drop-shadow(0 0 6px rgba(0,200,150,.6))}
 .nav-btn span{font-size:9px}
 .nav-icon{width:22px;height:22px;margin-bottom:1px}
@@ -162,9 +191,18 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
     <div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2)" id="dot-3"></div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,72px);gap:12px">
-    ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n=>`
-      <button onclick="pinPress('${n}')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer;${n===''?'visibility:hidden':''}">${n}</button>
-    `).join('')}
+    <button onclick="pinPress('1')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">1</button>
+    <button onclick="pinPress('2')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">2</button>
+    <button onclick="pinPress('3')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">3</button>
+    <button onclick="pinPress('4')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">4</button>
+    <button onclick="pinPress('5')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">5</button>
+    <button onclick="pinPress('6')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">6</button>
+    <button onclick="pinPress('7')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">7</button>
+    <button onclick="pinPress('8')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">8</button>
+    <button onclick="pinPress('9')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">9</button>
+    <div></div>
+    <button onclick="pinPress('0')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">0</button>
+    <button onclick="pinPress('⌫')" style="height:72px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:16px;color:#f0f0f0;font-size:22px;font-weight:600;cursor:pointer">⌫</button>
   </div>
   <div id="pin-error" style="color:#f87171;font-size:12px;margin-top:16px;opacity:0">Wrong PIN — try again</div>
 </div>
