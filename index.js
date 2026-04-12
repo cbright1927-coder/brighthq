@@ -236,7 +236,8 @@ Return JSON array only:
     const raw = res.data.content[0].text.replace(/```json|```/g, '').trim();
     const suggestions = JSON.parse(raw);
     const newOnes = suggestions.map(s => ({ ...s, id: Date.now() + Math.random(), createdAt: new Date().toISOString(), status: 'active' }));
-    const merged = [...newOnes, ...existing.filter(s => s.status === 'done')].slice(0, 20);
+    const pinned = existing.filter(s => s.pinned && s.status === 'active');
+const merged = [...pinned, ...newOnes, ...existing.filter(s => s.status === 'done')].slice(0, 20);
     saveSuggestions(merged);
     return merged;
   } catch(e) {
