@@ -166,7 +166,7 @@ const replied = Object.values(conversations).filter(c =>
 
   const today = new Date().toISOString().split('T')[0];
   const month = today.slice(0, 7);
-  const revenue = loadRevenue();
+  const revenue = await loadRevenue();
   if (!revenue.monthly[month]) revenue.monthly[month] = 0;
   revenue.monthly[month] = monthlyRevenue;
   const todayEntry = revenue.daily.find(d => d.date === today);
@@ -194,16 +194,16 @@ const replied = Object.values(conversations).filter(c =>
     revenue: { monthly: revenue.monthly, daily: revenue.daily.slice(-30), currentMonth: monthlyRevenue },
     clientsWithTimers,
 inventory: sales?.twilioInventory || [],
-    notes: loadNotes(),
-    suggestions: loadSuggestions(),
+    notes: await loadNotes(),
+    suggestions: await loadSuggestions(),
     fetchedAt: new Date().toISOString()
   };
 }
 
 async function generateSuggestions(data) {
-  const existing = loadSuggestions();
+  const existing = await loadSuggestions();
   const doneItems = existing.filter(s => s.status === 'done').map(s => s.title).join(', ') || 'none';
-  const notes = loadNotes().slice(0, 10).map(n => n.text).join(' | ') || 'none';
+  const notes = (await loadNotes()).slice(0, 10).map(n => n.text).join(' | ') || 'none';
 
   const prompt = `You are Max, a confident business partner AI for Callum in Wales.
 
@@ -310,41 +310,41 @@ app.get('/api/suggestions/refresh', async (req, res) => {
   res.json({ suggestions });
 });
 
-app.post('/api/suggestions/:id/pin', (req, res) => {
+app.post('/api/suggestions/:id/pin', async (req, res) => {
   const id = parseFloat(req.params.id);
   const { pinned } = req.body;
-  const s = loadSuggestions();
+  const s = await loadSuggestions();
   const found = s.find(x => x.id === id);
   if (found) found.pinned = pinned;
   saveSuggestions(s);
   res.json({ success: true });
 });
-app.post('/api/suggestions/:id/done', (req, res) => {
+app.post('/api/suggestions/:id/done', async (req, res) => {
   const id = parseFloat(req.params.id);
-  const s = loadSuggestions();
+  const s = await loadSuggestions();
   const found = s.find(x => x.id === id);
   if (found) found.status = 'done';
   saveSuggestions(s);
   res.json({ success: true });
 });
 
-app.delete('/api/suggestions/:id', (req, res) => {
-  saveSuggestions(loadSuggestions().filter(s => s.id !== parseFloat(req.params.id)));
+app.delete('/api/suggestions/:id', async (req, res) => {
+  saveSuggestions((await loadSuggestions()).filter(s => s.id !== parseFloat(req.params.id)));
   res.json({ success: true });
 });
 
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', async (req, res) => {
   const { text, category } = req.body;
   if (!text) return res.json({ success: false });
-  const notes = loadNotes();
+  const notes = await loadNotes();
   notes.unshift({ id: Date.now(), text, category: category || 'general', createdAt: new Date().toISOString() });
   if (notes.length > 100) notes.pop();
   saveNotes(notes);
   res.json({ success: true });
 });
 
-app.delete('/api/notes/:id', (req, res) => {
-  saveNotes(loadNotes().filter(n => n.id !== parseInt(req.params.id)));
+app.delete('/api/notes/:id', async (req, res) => {
+  saveNotes((await loadNotes()).filter(n => n.id !== parseInt(req.params.id)));
   res.json({ success: true });
 });
 
@@ -353,9 +353,9 @@ app.post('/api/chat', async (req, res) => {
   if (!message) return res.json({ reply: 'Say something!' });
 
   const data = await gatherData();
-  const memory = loadMemory().slice(-20);
-  const notes = loadNotes().slice(0, 5).map(n => n.text).join(', ');
-  const suggestions = loadSuggestions().filter(s => s.status === 'active').slice(0, 3).map(s => s.suggestion).join(' | ');
+  const memory = (await loadMemory()).slice(-20);
+  const notes = (await loadNotes()).slice(0, 5).map(n => n.text).join(', ');
+  const suggestions = (await loadSuggestions()).filter(s => s.status === 'active').slice(0, 3).map(s => s.suggestion).join(' | ');
   const months = Object.entries(data.revenue.monthly).slice(-3).map(([m, v]) => `${m}: £${v}`).join(', ');
 
   const systemPrompt = `You are Max — Callum's AI business partner. You're like a smart mate who genuinely knows his business inside out.
