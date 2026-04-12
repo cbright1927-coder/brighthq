@@ -459,11 +459,7 @@ function updateClock(){
 }
 setInterval(updateClock,1000);updateClock();
 
-function goToPage(n){
-  currentPage=Math.max(0,Math.min(TOTAL_PAGES-1,n));
-  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===currentPage));
-  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
-}
+
 
 function goToPage(n){
   const prev=document.querySelector('.page.active');
@@ -485,7 +481,13 @@ function goToPage(n){
     document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
   }
 }
-
+function fmtCountdown(ms){
+  if(ms<=0)return 'NOW';
+  const s=Math.floor(ms/1000);
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  if(h>=24){const d=Math.floor(h/24),hr=h%24;return `${d}d ${hr}h`;}
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
 function fmtDuration(ms){
   if(ms<=0)return 'Ended';
   const days=Math.floor(ms/86400000),hrs=Math.floor((ms%86400000)/3600000);
@@ -695,11 +697,7 @@ async function hqStartOutreach(){
   error.style.display='none';
 
   try{
-    const res=await fetch(`${appData.urls?.brightsales||''}/find-leads`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({town,type})
-    });
+   
 
     // Call directly via HQ proxy
     const proxyRes = await fetch('/api/find-leads',{
