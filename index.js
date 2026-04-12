@@ -211,6 +211,15 @@ app.post('/api/set-auto-buy', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
+app.post('/api/cancel-client', async (req, res) => {
+  const { twilioNumber } = req.body;
+  try {
+    const result = await axios.post(`${BRIGHTREPLY_URL}/cancel-client`, { twilioNumber });
+    res.json(result.data);
+  } catch(e) {
+    res.json({ success: false, error: e.message });
+  }
+});
 app.post('/api/update-message', async (req, res) => {
   const { twilioNumber, message } = req.body;
   try {
