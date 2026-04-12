@@ -10,11 +10,16 @@ html,body{height:100%;overflow:hidden;background:#020408}
 body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#f0f0f0;display:flex;flex-direction:column}
 canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #app{position:relative;z-index:1;flex:1;display:flex;flex-direction:row;overflow:hidden}
+.sidebar{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;background:rgba(2,4,8,.96);border-right:0.5px solid rgba(255,255,255,.06);width:58px;flex-shrink:0;position:relative;z-index:2}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:9px;font-weight:500;transition:color .15s;width:100%;border-radius:8px}
+.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}
+.nav-btn span{font-size:9px}
+.nav-icon{width:22px;height:22px;margin-bottom:1px}
 .pages{flex:1;position:relative;overflow:hidden}
 .page{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
 .page.active{display:block}
 .header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:24px;font-weight:900;letter-spacing:-1px}
+.logo{font-size:22px;font-weight:900;letter-spacing:-1px}
 .logo .bright{color:#fff}
 .logo .hq{color:#00c896}
 .live-dot{width:8px;height:8px;border-radius:50%;background:#00c896;animation:bpulse 2s infinite;display:inline-block;margin-right:6px}
@@ -41,30 +46,22 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .ov-card.think .ov-label,.ov-card.think .ov-sub{color:#fbbf24}
 .rev-card{border-radius:16px;padding:16px;background:linear-gradient(135deg,rgba(0,200,150,.12),rgba(96,165,250,.06));border:0.5px solid rgba(0,200,150,.2);margin:0 16px 12px}
 .rev-label{font-size:11px;color:#00c896;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:4px}
-.rev-amount{font-size:38px;font-weight:900;letter-spacing:-2px;color:#fff}
+.rev-amount{font-size:36px;font-weight:900;letter-spacing:-2px;color:#fff}
 .rev-sub{font-size:12px;color:#475569;margin-top:2px}
-.rev-breakdown{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.rev-breakdown{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
 .rev-item-label{font-size:10px;color:#475569;margin-bottom:2px}
-.rev-item-value{font-size:16px;font-weight:700}
+.rev-item-value{font-size:15px;font-weight:700}
 .rev-months{display:flex;gap:6px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
 .rev-months::-webkit-scrollbar{display:none}
-.rev-month{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.07);border-radius:8px;padding:8px 10px;text-align:center;flex-shrink:0;min-width:58px}
+.rev-month{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.07);border-radius:8px;padding:8px 10px;text-align:center;flex-shrink:0;min-width:54px}
 .rev-month.current{border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.06)}
 .rev-month-label{font-size:9px;color:#475569;margin-bottom:3px}
-.rev-month-val{font-size:14px;font-weight:700;color:#00c896}
+.rev-month-val{font-size:13px;font-weight:700;color:#00c896}
 .countdown-card{border-radius:14px;padding:14px;margin:0 16px 12px;display:flex;align-items:center;justify-content:space-between}
 .countdown-card.trade-cd{background:rgba(167,139,250,.08);border:0.5px solid rgba(167,139,250,.25)}
-.countdown-card.trial-cd{background:rgba(251,191,36,.08);border:0.5px solid rgba(251,191,36,.25)}
-.countdown-card.payment-cd{background:rgba(0,200,150,.08);border:0.5px solid rgba(0,200,150,.25)}
-.cd-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.trade-cd .cd-label{color:#a78bfa}
-.trial-cd .cd-label{color:#fbbf24}
-.payment-cd .cd-label{color:#00c896}
+.cd-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:#a78bfa}
 .cd-sub{font-size:11px;color:#475569}
-.cd-time{font-size:20px;font-weight:900;letter-spacing:-1px}
-.trade-cd .cd-time{color:#a78bfa}
-.trial-cd .cd-time{color:#fbbf24}
-.payment-cd .cd-time{color:#00c896}
+.cd-time{font-size:20px;font-weight:900;letter-spacing:-1px;color:#a78bfa}
 .rundown-card{margin:0 16px 12px;border-radius:14px;padding:14px;background:rgba(0,200,150,.06);border:0.5px solid rgba(0,200,150,.15)}
 .rundown-label{font-size:10px;color:#00c896;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .rundown-text{font-size:13px;color:#94a3b8;line-height:1.7}
@@ -111,10 +108,10 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .cmsg-ai{background:rgba(255,255,255,.06);color:#e2e8f0;align-self:flex-start;border-bottom-left-radius:4px;border:0.5px solid rgba(255,255,255,.08)}
 .cmsg-ai.thinking{color:#334155;font-style:italic}
 .chat-row{display:flex;gap:8px}
-.chat-inp{flex:1;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.1);border-radius:22px;padding:11px 16px;color:#f0f0f0;font-size:13px;outline:none;font-family:-apple-system,sans-serif}
+.chat-inp{flex:1;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.1);border-radius:22px;padding:10px 14px;color:#f0f0f0;font-size:13px;outline:none;font-family:-apple-system,sans-serif}
 .chat-inp:focus{border-color:#00c896}
 .chat-inp::placeholder{color:#2a3444}
-.chat-send{background:#00c896;border:none;border-radius:50%;width:42px;height:42px;color:#000;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700}
+.chat-send{background:#00c896;border:none;border-radius:50%;width:40px;height:40px;color:#000;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700}
 .quick-prompts{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding-bottom:2px}
 .quick-prompts::-webkit-scrollbar{display:none}
 .qp{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.08);border-radius:20px;padding:5px 12px;font-size:11px;color:#475569;cursor:pointer;white-space:nowrap;flex-shrink:0}
@@ -124,7 +121,7 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .note-input{flex:1;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:#f0f0f0;font-size:13px;outline:none;font-family:-apple-system,sans-serif}
 .note-input:focus{border-color:#fbbf24}
 .note-input::placeholder{color:#2a3444}
-.note-add-btn{background:#fbbf24;border:none;border-radius:10px;width:42px;height:42px;color:#000;font-size:20px;cursor:pointer;font-weight:700;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.note-add-btn{background:#fbbf24;border:none;border-radius:10px;width:40px;height:40px;color:#000;font-size:20px;cursor:pointer;font-weight:700;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .note-card{background:rgba(255,255,255,.03);border:0.5px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:8px}
 .note-text{font-size:13px;color:#94a3b8;flex:1;line-height:1.5}
 .note-date{font-size:10px;color:#1e293b;margin-top:3px}
@@ -143,13 +140,6 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .sp-paid{background:rgba(96,165,250,.15);color:#60a5fa}
 .refresh-btn{background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.08);border-radius:20px;padding:6px 14px;font-size:11px;color:#475569;cursor:pointer;font-family:-apple-system,sans-serif}
 .refresh-btn:active{background:rgba(251,191,36,.1);color:#fbbf24}
-.sidebar{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 0;background:rgba(2,4,8,.96);border-right:0.5px solid rgba(255,255,255,.06);width:58px;flex-shrink:0;position:relative;z-index:2}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:9px;font-weight:500;transition:color .15s;width:100%;border-radius:8px}
-.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}
-.nav-btn span{font-size:9px}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:10px;font-weight:500;transition:color .15s}
-.nav-btn.active{color:#00c896}
-.nav-icon{width:22px;height:22px;margin-bottom:1px}
 .empty{color:#1e293b;font-size:13px;text-align:center;padding:24px 0}
 .refresh-time{font-size:10px;color:#0f172a;text-align:center;padding:4px 0 8px}
 </style>
@@ -157,17 +147,38 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 <body>
 <canvas id="space"></canvas>
 <div id="app">
-  <div class="pages" id="pages">
+  <nav class="sidebar">
+    <button class="nav-btn active" onclick="goToPage(0)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      <span>HQ</span>
+    </button>
+    <button class="nav-btn" onclick="goToPage(1)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Reply</span>
+    </button>
+    <button class="nav-btn" onclick="goToPage(2)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Sales</span>
+    </button>
+    <button class="nav-btn" onclick="goToPage(3)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Trade</span>
+    </button>
+    <button class="nav-btn" onclick="goToPage(4)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Think</span>
+    </button>
+  </nav>
 
-    <!-- Page 0: Overview -->
-    <div class="page" id="p0">
+  <div class="pages">
+    <div class="page active" id="p0">
       <div class="header">
         <div class="logo"><span class="bright">Bright</span><span class="hq">HQ</span></div>
         <span class="time-badge"><span class="live-dot"></span><span id="clock">--:--</span></span>
       </div>
-      <div class="rundown-card" id="rundown-card">
+      <div class="rundown-card">
         <div class="rundown-label">Max's daily rundown</div>
-        <div class="rundown-text" id="rundown-text">Loading your daily rundown...</div>
+        <div class="rundown-text" id="rundown-text">Loading...</div>
       </div>
       <div class="countdown-card trade-cd">
         <div>
@@ -236,15 +247,14 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
       <div class="refresh-time" id="refresh-time"></div>
     </div>
 
-    <!-- Page 1: BrightReply -->
     <div class="page" id="p1">
       <div class="header"><div class="logo"><span class="bright">Bright</span><span style="color:#00c896">Reply</span></div></div>
       <div class="pad">
         <div class="glass" style="padding:14px;margin-bottom:12px">
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Active</div><div style="font-size:24px;font-weight:900;color:#00c896" id="r-active">0</div></div>
-            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Total</div><div style="font-size:24px;font-weight:900;color:#fff" id="r-total">0</div></div>
-            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Revenue</div><div style="font-size:24px;font-weight:900;color:#00c896" id="r-revenue">£0</div></div>
+            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Active</div><div style="font-size:22px;font-weight:900;color:#00c896" id="r-active">0</div></div>
+            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Total</div><div style="font-size:22px;font-weight:900;color:#fff" id="r-total">0</div></div>
+            <div><div style="font-size:10px;color:#475569;margin-bottom:3px">Revenue</div><div style="font-size:22px;font-weight:900;color:#00c896" id="r-revenue">£0</div></div>
           </div>
         </div>
         <div class="section-title">Client timers</div>
@@ -256,16 +266,15 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
       </div>
     </div>
 
-    <!-- Page 2: BrightSales -->
     <div class="page" id="p2">
       <div class="header"><div class="logo"><span class="bright">Bright</span><span style="color:#60a5fa">Sales</span></div></div>
       <div class="pad">
         <div class="glass" style="padding:14px;margin-bottom:12px">
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">
-            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Leads</div><div style="font-size:20px;font-weight:900;color:#fff" id="s-leads">0</div></div>
-            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Replied</div><div style="font-size:20px;font-weight:900;color:#fbbf24" id="s-replied">0</div></div>
-            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Closed</div><div style="font-size:20px;font-weight:900;color:#00c896" id="s-closed">0</div></div>
-            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Cancelled</div><div style="font-size:20px;font-weight:900;color:#f87171" id="s-cancelled">0</div></div>
+            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Leads</div><div style="font-size:18px;font-weight:900;color:#fff" id="s-leads">0</div></div>
+            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Replied</div><div style="font-size:18px;font-weight:900;color:#fbbf24" id="s-replied">0</div></div>
+            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Closed</div><div style="font-size:18px;font-weight:900;color:#00c896" id="s-closed">0</div></div>
+            <div><div style="font-size:9px;color:#475569;margin-bottom:3px">Cancelled</div><div style="font-size:18px;font-weight:900;color:#f87171" id="s-cancelled">0</div></div>
           </div>
         </div>
         <div class="section-title">Recent deals</div>
@@ -275,7 +284,6 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
       </div>
     </div>
 
-    <!-- Page 3: Trading -->
     <div class="page" id="p3">
       <div class="header"><div class="logo"><span class="bright">Bright</span><span style="color:#a78bfa">Trade</span></div></div>
       <div class="pad">
@@ -310,7 +318,6 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
       </div>
     </div>
 
-    <!-- Page 4: Think -->
     <div class="page" id="p4">
       <div class="header">
         <div class="logo"><span class="bright">Bright</span><span style="color:#fbbf24">Think</span></div>
@@ -332,100 +339,83 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
         <div id="notes-list"><div class="empty">No notes yet</div></div>
       </div>
     </div>
-
   </div>
-
-  </div>
-<nav class="sidebar">
-  <button class="nav-btn active" onclick="goToPage(0)">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    <span>HQ</span>
-  </button>
-  <button class="nav-btn" onclick="goToPage(1)">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-    <span>Reply</span>
-  </button>
-  <button class="nav-btn" onclick="goToPage(2)">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Sales</span>
-  </button>
-  <button class="nav-btn" onclick="goToPage(3)">
-    <svg class="nav-icon" viewBox="0 0 24 24
+</div>
 
 <script>
-let appData = {};
-let currentPage = 0;
-const TOTAL_PAGES = 5;
-let tradeCountdownMs = 0;
+let appData={};
+let currentPage=0;
+const TOTAL_PAGES=5;
+let tradeCountdownMs=0;
 
-const canvas = document.getElementById('space');
-const ctx = canvas.getContext('2d');
-let stars = [], shootingStars = [];
-let mouse = { x: -1000, y: -1000 };
-let W, H;
+const canvas=document.getElementById('space');
+const ctx=canvas.getContext('2d');
+let stars=[],shootingStars=[];
+let mouse={x:-1000,y:-1000};
+let W,H;
 
-function resizeCanvas() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function resizeCanvas(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 
-function initStars() {
-  stars = [];
-  for (let i = 0; i < 200; i++) {
+function initStars(){
+  stars=[];
+  for(let i=0;i<200;i++){
     stars.push({
-      x: Math.random()*W, y: Math.random()*H,
-      vx: (Math.random()-.5)*.12, vy: (Math.random()-.5)*.12,
-      r: Math.random()*1.6+.2, a: Math.random()*.7+.2,
-      color: ['#ffffff','#a78bfa','#60a5fa','#00c896','#fbbf24','#f0abfc'][Math.floor(Math.random()*6)]
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,
+      r:Math.random()*1.6+.2,a:Math.random()*.7+.2,
+      color:['#ffffff','#a78bfa','#60a5fa','#00c896','#fbbf24','#f0abfc'][Math.floor(Math.random()*6)]
     });
   }
 }
 
-function spawnShootingStar() {
-  const speed = 8 + Math.random()*6;
-  const angle = .3 + Math.random()*.4;
+function spawnShootingStar(){
+  const speed=8+Math.random()*6;
+  const angle=.3+Math.random()*.4;
   shootingStars.push({
-    x: Math.random()*W*.6, y: Math.random()*H*.35,
-    vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
-    len: 80+Math.random()*60, alpha: 1,
-    width: Math.random()*1.5+.5,
-    color: ['#ffffff','#a78bfa','#60a5fa','#00c896'][Math.floor(Math.random()*4)]
+    x:Math.random()*W*.6,y:Math.random()*H*.35,
+    vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+    len:80+Math.random()*60,alpha:1,
+    width:Math.random()*1.5+.5,
+    color:['#ffffff','#a78bfa','#60a5fa','#00c896'][Math.floor(Math.random()*4)]
   });
 }
 
-setInterval(spawnShootingStar, 3500);
-setInterval(() => { if (Math.random() > .55) spawnShootingStar(); }, 1800);
+setInterval(spawnShootingStar,3500);
+setInterval(()=>{if(Math.random()>.55)spawnShootingStar();},1800);
 
-function drawFrame() {
+function drawFrame(){
   ctx.clearRect(0,0,W,H);
-  const mx=mouse.x, my=mouse.y;
-  stars.forEach(s => {
-    const dx=mx-s.x, dy=my-s.y;
+  const mx=mouse.x,my=mouse.y;
+  stars.forEach(s=>{
+    const dx=mx-s.x,dy=my-s.y;
     const dist=Math.sqrt(dx*dx+dy*dy);
-    if (dist<130) { const f=(130-dist)/130; s.vx+=dx/dist*f*.045; s.vy+=dy/dist*f*.045; }
-    s.vx*=.96; s.vy*=.96;
-    s.x+=s.vx; s.y+=s.vy;
-    if(s.x<0)s.x=W; if(s.x>W)s.x=0; if(s.y<0)s.y=H; if(s.y>H)s.y=0;
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=s.color; ctx.globalAlpha=s.a; ctx.fill(); ctx.globalAlpha=1;
+    if(dist<130){const f=(130-dist)/130;s.vx+=dx/dist*f*.045;s.vy+=dy/dist*f*.045;}
+    s.vx*=.96;s.vy*=.96;
+    s.x+=s.vx;s.y+=s.vy;
+    if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=s.color;ctx.globalAlpha=s.a;ctx.fill();ctx.globalAlpha=1;
   });
-  for(let i=0;i<stars.length;i++) for(let j=i+1;j<stars.length;j++) {
+  for(let i=0;i<stars.length;i++)for(let j=i+1;j<stars.length;j++){
     const a=stars[i],b=stars[j],dx=a.x-b.x,dy=a.y-b.y;
     const dist=Math.sqrt(dx*dx+dy*dy);
     if(dist<90){
       const op=(1-dist/90)*.2;
       const adx=mx-a.x,ady=my-a.y,md=Math.sqrt(adx*adx+ady*ady);
       const boost=md<160?(160-md)/160*.35:0;
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-      ctx.strokeStyle=`rgba(167,139,250,${op+boost})`; ctx.lineWidth=.4; ctx.stroke();
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle=`rgba(167,139,250,${op+boost})`;ctx.lineWidth=.4;ctx.stroke();
     }
   }
   shootingStars=shootingStars.filter(s=>s.alpha>0.02);
-  shootingStars.forEach(s => {
+  shootingStars.forEach(s=>{
     const spd=Math.sqrt(s.vx*s.vx+s.vy*s.vy);
-    const tx=s.x-s.vx/spd*s.len, ty=s.y-s.vy/spd*s.len;
-    ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(tx,ty);
-    ctx.strokeStyle=s.color; ctx.globalAlpha=s.alpha; ctx.lineWidth=s.width; ctx.stroke();
-    ctx.globalAlpha=s.alpha*.5; ctx.lineWidth=s.width*2.5; ctx.stroke();
+    const tx=s.x-s.vx/spd*s.len,ty=s.y-s.vy/spd*s.len;
+    ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(tx,ty);
+    ctx.strokeStyle=s.color;ctx.globalAlpha=s.alpha;ctx.lineWidth=s.width;ctx.stroke();
+    ctx.globalAlpha=s.alpha*.5;ctx.lineWidth=s.width*2.5;ctx.stroke();
     ctx.globalAlpha=1;
-    s.x+=s.vx; s.y+=s.vy; s.alpha-=.016;
+    s.x+=s.vx;s.y+=s.vy;s.alpha-=.016;
   });
   requestAnimationFrame(drawFrame);
 }
@@ -434,64 +424,64 @@ window.addEventListener('resize',()=>{resizeCanvas();initStars();});
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
 window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
 window.addEventListener('touchend',()=>{setTimeout(()=>{mouse.x=-1000;mouse.y=-1000;},500);});
-resizeCanvas(); initStars(); drawFrame();
+resizeCanvas();initStars();drawFrame();
 
-function updateClock() {
+function updateClock(){
   document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
-setInterval(updateClock,1000); updateClock();
+setInterval(updateClock,1000);updateClock();
 
-function goToPage(n) {
+function goToPage(n){
   currentPage=Math.max(0,Math.min(TOTAL_PAGES-1,n));
   document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===currentPage));
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===currentPage));
 }
 
-function fmtCountdown(ms) {
-  if (ms <= 0) return 'NOW';
+function fmtCountdown(ms){
+  if(ms<=0)return 'NOW';
   const s=Math.floor(ms/1000);
-  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
-  if (h >= 24) { const d=Math.floor(h/24), hr=h%24; return `${d}d ${hr}h`; }
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  if(h>=24){const d=Math.floor(h/24),hr=h%24;return `${d}d ${hr}h`;}
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
 
-function fmtDuration(ms) {
-  if (ms <= 0) return 'Ended';
-  const days=Math.floor(ms/86400000), hrs=Math.floor((ms%86400000)/3600000);
+function fmtDuration(ms){
+  if(ms<=0)return 'Ended';
+  const days=Math.floor(ms/86400000),hrs=Math.floor((ms%86400000)/3600000);
   return `${days}d ${hrs}h left`;
 }
 
-function updateCountdowns() {
-  if (!tradeCountdownMs) return;
-  tradeCountdownMs -= 1000;
-  const fmt = fmtCountdown(tradeCountdownMs);
-  const el1 = document.getElementById('trade-countdown');
-  const el2 = document.getElementById('trade-countdown2');
-  if (el1) el1.textContent = fmt;
-  if (el2) el2.textContent = fmt;
+function updateCountdowns(){
+  if(!tradeCountdownMs)return;
+  tradeCountdownMs-=1000;
+  const fmt=fmtCountdown(tradeCountdownMs);
+  const el1=document.getElementById('trade-countdown');
+  const el2=document.getElementById('trade-countdown2');
+  if(el1)el1.textContent=fmt;
+  if(el2)el2.textContent=fmt;
 }
-setInterval(updateCountdowns, 1000);
+setInterval(updateCountdowns,1000);
 
-async function loadData() {
-  try {
+async function loadData(){
+  try{
     const res=await fetch('/api/data');
     appData=await res.json();
     renderAll();
     document.getElementById('refresh-time').textContent='Updated '+new Date().toLocaleTimeString();
-  } catch(e){console.error(e);}
+  }catch(e){console.error(e);}
 }
 
-async function loadRundown() {
-  try {
+async function loadRundown(){
+  try{
     const res=await fetch('/api/daily-rundown');
     const data=await res.json();
     document.getElementById('rundown-text').textContent=data.rundown;
-  } catch(e) {
+  }catch(e){
     document.getElementById('rundown-text').textContent='Could not load rundown.';
   }
 }
 
-function renderAll() {
+function renderAll(){
   const d=appData;
   if(!d.brightreply)return;
   const paid=d.brightsales?.paidClients||0;
@@ -510,15 +500,15 @@ function renderAll() {
   document.getElementById('ov-leads').textContent=leads;
   document.getElementById('ov-suggest').textContent=(d.suggestions||[]).filter(s=>s.status==='active').length;
 
-  if (d.trading?.nextTradingMs) {
-    tradeCountdownMs = d.trading.nextTradingMs;
-    const fmt = fmtCountdown(tradeCountdownMs);
-    document.getElementById('trade-countdown').textContent = fmt;
-    document.getElementById('trade-countdown2').textContent = fmt;
-    const ny = new Date(d.trading.nextTradingTarget);
-    const ukTime = ny.toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'});
-    document.getElementById('trade-cd-sub').textContent = ukTime + ' UK';
-    document.getElementById('trade-cd-sub2').textContent = ukTime + ' UK';
+  if(d.trading?.nextTradingMs){
+    tradeCountdownMs=d.trading.nextTradingMs;
+    const fmt=fmtCountdown(tradeCountdownMs);
+    document.getElementById('trade-countdown').textContent=fmt;
+    document.getElementById('trade-countdown2').textContent=fmt;
+    const ny=new Date(d.trading.nextTradingTarget);
+    const ukTime=ny.toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'});
+    document.getElementById('trade-cd-sub').textContent=ukTime+' UK';
+    document.getElementById('trade-cd-sub2').textContent=ukTime+' UK';
   }
 
   const monthlyData=d.revenue?.monthly||{};
@@ -532,7 +522,7 @@ function renderAll() {
     </div>`
   ).join('')||'<div style="font-size:11px;color:#1e293b;padding:8px">Revenue history will appear here</div>';
 
-  const v1=d.trading?.v1, v2=d.trading?.v2;
+  const v1=d.trading?.v1,v2=d.trading?.v2;
   const pos=v1?.position||v2?.position||'--';
   document.getElementById('ov-trade').textContent=pos;
   document.getElementById('ov-trade-sub').textContent=pos==='TQQQ'?'bullish':pos==='SQQQ'?'bearish':'market closed';
@@ -577,7 +567,7 @@ function renderAll() {
     deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><span class="status-pill sp-trial">Trial</span></div>`).join(''):
     '<div class="empty">No deals yet — outreach starts Monday!</div>';
 
-  const t1el=document.getElementById('t1-pos'), t2el=document.getElementById('t2-pos');
+  const t1el=document.getElementById('t1-pos'),t2el=document.getElementById('t2-pos');
   t1el.textContent=v1?.position||'--';
   t1el.className='trade-pos '+(v1?.position==='TQQQ'?'bull':v1?.position==='SQQQ'?'bear':'none');
   t2el.textContent=v2?.position||'--';
@@ -593,7 +583,7 @@ function renderAll() {
   renderNotes(d.notes||[]);
 }
 
-function renderSuggestions(suggestions) {
+function renderSuggestions(suggestions){
   const el=document.getElementById('suggestions-list');
   const active=suggestions.filter(s=>s.status==='active');
   if(!active.length){el.innerHTML='<div class="empty">Tap Refresh to get suggestions from Max</div>';return;}
@@ -610,7 +600,7 @@ function renderSuggestions(suggestions) {
   ).join('');
 }
 
-function renderNotes(notes) {
+function renderNotes(notes){
   const el=document.getElementById('notes-list');
   if(!notes.length){el.innerHTML='<div class="empty">No notes yet</div>';return;}
   el.innerHTML=notes.map(n=>
@@ -625,19 +615,19 @@ function renderNotes(notes) {
   ).join('');
 }
 
-async function refreshSuggestions() {
+async function refreshSuggestions(){
   document.getElementById('suggestions-list').innerHTML='<div class="empty" style="color:#fbbf24">Max is thinking...</div>';
-  try {
+  try{
     const res=await fetch('/api/suggestions/refresh');
     const data=await res.json();
     renderSuggestions(data.suggestions);
-  } catch(e){document.getElementById('suggestions-list').innerHTML='<div class="empty">Error — try again</div>';}
+  }catch(e){document.getElementById('suggestions-list').innerHTML='<div class="empty">Error — try again</div>';}
 }
 
-async function markDone(id) { await fetch(`/api/suggestions/${id}/done`,{method:'POST'}); loadData(); }
-async function dismissSuggestion(id) { await fetch(`/api/suggestions/${id}`,{method:'DELETE'}); loadData(); }
+async function markDone(id){await fetch(`/api/suggestions/${id}/done`,{method:'POST'});loadData();}
+async function dismissSuggestion(id){await fetch(`/api/suggestions/${id}`,{method:'DELETE'});loadData();}
 
-async function addNote() {
+async function addNote(){
   const input=document.getElementById('note-input');
   const cat=document.getElementById('note-cat').value;
   const text=input.value.trim();
@@ -647,9 +637,9 @@ async function addNote() {
   loadData();
 }
 
-async function deleteNote(id) { await fetch('/api/notes/'+id,{method:'DELETE'}); loadData(); }
+async function deleteNote(id){await fetch('/api/notes/'+id,{method:'DELETE'});loadData();}
 
-async function overviewChat() {
+async function overviewChat(){
   const input=document.getElementById('overview-input');
   const msg=input.value.trim();
   if(!msg)return;
@@ -659,7 +649,7 @@ async function overviewChat() {
 
 function quickChat(msg){sendToChat(msg);}
 
-async function sendToChat(msg) {
+async function sendToChat(msg){
   const messages=document.getElementById('overview-chat');
   messages.innerHTML+=`<div class="cmsg cmsg-user">${msg}</div>`;
   const thinking=document.createElement('div');
@@ -668,22 +658,22 @@ async function sendToChat(msg) {
   thinking.textContent='Max is thinking...';
   messages.appendChild(thinking);
   messages.scrollTop=messages.scrollHeight;
-  try {
+  try{
     const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
     const data=await res.json();
     document.getElementById('hq-thinking').remove();
     messages.innerHTML+=`<div class="cmsg cmsg-ai">${data.reply}</div>`;
-  } catch(e) {
+  }catch(e){
     document.getElementById('hq-thinking').remove();
     messages.innerHTML+=`<div class="cmsg cmsg-ai">Error — try again!</div>`;
   }
   messages.scrollTop=messages.scrollHeight;
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load',()=>{
   loadData();
   loadRundown();
-  setInterval(loadData, 30000);
+  setInterval(loadData,30000);
 });
 </script>
 </body>
