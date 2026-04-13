@@ -13,7 +13,7 @@ canvas#space{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointe
 .sidebar{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px 0;background:rgba(2,4,8,.96);border-left:0.5px solid rgba(255,255,255,.06);width:58px;flex-shrink:0;position:relative;z-index:2}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:none;border:none;cursor:pointer;color:#1e293b;font-size:9px;font-weight:500;transition:all .2s;width:100%;border-radius:8px;-webkit-tap-highlight-color:transparent}
 .nav-btn:hover,.nav-btn:active{color:#00c896;background:rgba(0,200,150,.08);transform:scale(1.15)}
-.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}const CORRECT_PIN = '1234';
+.nav-btn.active{color:#00c896;background:rgba(0,200,150,.08)}const CORRECT_PIN = '1927';
 let pinEntry = '';
 
 function pinPress(val) {
@@ -193,7 +193,7 @@ function pinPress(val) {
     <div id="dot-3" style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);transition:all .15s"></div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,80px);gap:10px">
-    <button onclick="pinPress('1')" class="pin-btn">1</button>
+    <button onclick="pinPress('1'); return false;" class="pin-btn">1</button>
     <button onclick="pinPress('2')" class="pin-btn">2</button>
     <button onclick="pinPress('3')" class="pin-btn">3</button>
     <button onclick="pinPress('4')" class="pin-btn">4</button>
@@ -781,7 +781,7 @@ function renderAll(){
 
   const deals=d.brightsales?.recentDeals||[];
   document.getElementById('sales-deals').innerHTML=deals.length?
-    deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><button class="suggest-btn suggest-dismiss" onclick="removeDeal('${dl.phone}')">Remove</button></div>`).join('')`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><span class="status-pill sp-trial">Trial</span></div>`).join(''):
+    deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><button class="suggest-btn suggest-dismiss" onclick="removeDeal('${dl.phone}')">Remove</button></div>`).join('')
     '<div class="empty">No deals yet — outreach starts Monday!</div>';
 
   const t1el=document.getElementById('t1-pos'),t2el=document.getElementById('t2-pos');
@@ -955,6 +955,11 @@ async function removeDeal(phone){
   await fetch('/api/remove-deal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
   loadData();
 }
+ async function removeDeal(phone){
+  if(!confirm('Remove this deal?'))return;
+  await fetch('/api/remove-deal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+  loadData();
+} 
   async function markDone(id){await fetch(`/api/suggestions/${id}/done`,{method:'POST'});loadData();}
 async function dismissSuggestion(id){await fetch(`/api/suggestions/${id}`,{method:'DELETE'});loadData();}
 
