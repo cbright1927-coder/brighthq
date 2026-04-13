@@ -185,7 +185,11 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 5. **Trading bot results** — check Telegram for Monday 2:30pm alerts
 6. Add business type categories to leads view in HQ
 7. Future: Google review bot, landing page, referral scheme
-
+8. **Build Lessons database** — add to Think page in BrightHQ
+   - Log mistakes, learnings, what worked
+   - Categories: outreach, tech, trading, operations
+   - Max reads lessons when making suggestions so he never repeats bad advice
+   - First entries to add: SMS too long (460-612 chars, need under 160), landlines waste money (skip non +447)
 ---
 
 ## Current Session
