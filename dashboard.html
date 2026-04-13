@@ -781,7 +781,7 @@ function renderAll(){
 
   const deals=d.brightsales?.recentDeals||[];
   document.getElementById('sales-deals').innerHTML=deals.length?
-    deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><span class="status-pill sp-trial">Trial</span></div>`).join(''):
+    deals.map(dl=>`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><button class="suggest-btn suggest-dismiss" onclick="removeDeal('${dl.phone}')">Remove</button></div>`).join('')`<div class="client-row"><div><div class="client-name">${dl.name}</div><div class="client-num">${dl.type} · ${new Date(dl.closedAt).toLocaleDateString()}</div></div><span class="status-pill sp-trial">Trial</span></div>`).join(''):
     '<div class="empty">No deals yet — outreach starts Monday!</div>';
 
   const t1el=document.getElementById('t1-pos'),t2el=document.getElementById('t2-pos');
@@ -950,7 +950,12 @@ function chatAboutSuggestion(title,suggestion){
   },300);
 }
 
-async function markDone(id){await fetch(`/api/suggestions/${id}/done`,{method:'POST'});loadData();}
+async function removeDeal(phone){
+  if(!confirm('Remove this deal from recent list?'))return;
+  await fetch('/api/remove-deal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+  loadData();
+}
+  async function markDone(id){await fetch(`/api/suggestions/${id}/done`,{method:'POST'});loadData();}
 async function dismissSuggestion(id){await fetch(`/api/suggestions/${id}`,{method:'DELETE'});loadData();}
 
 async function addNote(){
