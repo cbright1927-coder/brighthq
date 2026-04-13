@@ -58,7 +58,7 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 
 ### BrightHQ (brighthq)
 - Unified dashboard for all projects
-- PIN protected — 4 digit PIN on load
+- PIN protected — 4 digit PIN on load (currently 1927)
 - Max AI — business partner with memory, daily rundown, suggestions
 - Suggestions read notes and avoid repeating done/dismissed items
 - Pinned suggestions survive refresh
@@ -119,7 +119,7 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 - Price: £14.99/month per client
 - Cost: ~£1/month Twilio number per client
 - Profit: ~£13.99/month per client
-- Target market: hair salons, independent tradespeople in Wales
+- Target market: hair salons, beauty salons, plumbers in Wales
 - Outreach: AI cold SMS via BrightSales, limit 10 per day to start
 - Growth plan: increase outreach limit as revenue grows
 
@@ -151,14 +151,40 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
 
 ---
 
-## Pending / Next Steps
+## IMPORTANT — Outreach Issues Found
 
-- Buy at least one real Twilio number for inventory before first real outreach
-- Monday 9am — first outreach to 10 leads
-- Monday 2:30pm — first trading bot alerts — check Telegram
-- After first clients — increase outreach limit gradually
-- Add business type categories to leads view in HQ
-- Future ideas: Google review bot, appointment reminders, landing page for BrightReply, referral scheme
+### SMS too long — MUST FIX BEFORE NEXT OUTREACH
+- Current opening message is ~190 characters — splits into 4 SMS segments
+- Twilio charges per segment — costs 4x more and looks spammy
+- Most businesses ignored messages because of this
+- Fix: shorten opening message to under 160 characters
+- New message to use (under 160 chars):
+  "Hi! Do you ever miss calls at [name]? I help local salons auto-text customers back so you don't lose them. Free trial — worth a chat?"
+
+### Landline filtering — add before next outreach
+- +441633 numbers are Newport landlines — cannot receive SMS
+- Shows as Undelivered in Twilio
+- Fix: only message numbers starting with +447 (mobiles)
+- Add to startOutreach function: if (!lead.phone.startsWith('+447')) skip
+
+### First outreach results
+- ~90 businesses contacted on 13 April 2026
+- Mix of hair salons, beauty salons, plumbers in Newport/Cwmbran area
+- Most messages delivered but zero replies so far
+- Likely due to long message being flagged as spam
+- Wait 24-48 hours for any late replies before sending more
+
+---
+
+## Pending / Next Steps — DO THESE NEXT SESSION
+
+1. **FIX OPENING MESSAGE** — shorten to under 160 chars in brightsales index.js
+2. **ADD MOBILE FILTER** — skip non +447 numbers in startOutreach
+3. **Buy a real Twilio number** for inventory before assigning to first real client
+4. **Check for replies** — any responses from first outreach batch
+5. **Trading bot results** — check Telegram for Monday 2:30pm alerts
+6. Add business type categories to leads view in HQ
+7. Future: Google review bot, landing page, referral scheme
 
 ---
 
