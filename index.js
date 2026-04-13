@@ -296,6 +296,15 @@ app.post('/api/add-inventory', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
+app.post('/api/remove-deal', async (req, res) => {
+  const { phone } = req.body;
+  try {
+    await axios.post(`${BRIGHTSALES_URL}/remove-deal`, { phone });
+    res.json({ success: true });
+  } catch(e) {
+    res.json({ success: false });
+  }
+});
 app.post('/api/start-outreach', async (req, res) => {
   const { limit } = req.body || {};
   try {
