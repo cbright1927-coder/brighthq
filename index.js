@@ -185,7 +185,7 @@ const replied = Object.values(conversations).filter(c =>
 
   return {
     brightreply: { activeClients: clients.length, totalClients: clients.length, clients: clients.slice(0, 10) },
-    brightsales: { totalLeads: leads.length - contacted, contacted, replied, closedDeals: closedDeals.length, paidClients, trialClients, cancelledClients: cancelledClients.length, monthlyRevenue, pendingAssignment: pendingAssignment.length, recentDeals: closedDeals.slice(-5).reverse() },
+    brightsales: { totalLeads: Math.max(0, leads.length - contacted), contacted, replied, closedDeals: closedDeals.length, paidClients, trialClients, cancelledClients: cancelledClients.length, monthlyRevenue, pendingAssignment: pendingAssignment.length, recentDeals: closedDeals.slice(-5).reverse() },
     trading: {
       v1: { position: tradeV1?.position || null, decision: v1Decision?.decision || null, confidence: v1Decision?.confidence || null, reason: v1Decision?.reason || null, timestamp: v1Decision?.timestamp || null },
       v2: { position: tradeV2?.current_position || null, decision: v2Decision?.decision || null, confidence: v2Decision?.confidence || null, reason: v2Decision?.reason || null, timestamp: v2Decision?.timestamp || null },
