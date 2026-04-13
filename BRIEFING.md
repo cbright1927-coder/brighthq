@@ -190,6 +190,11 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
    - Categories: outreach, tech, trading, operations
    - Max reads lessons when making suggestions so he never repeats bad advice
    - First entries to add: SMS too long (460-612 chars, need under 160), landlines waste money (skip non +447)
+9. **Improve pre-market news analysis** — in BrightTrade V2
+    - 5 mins before market open fetch last 24hrs financial news
+    - Summarise key events (Fed news, CPI, earnings, geopolitical)
+    - Feed summary into AI decision as extra context
+    - Should improve trade quality significantly
 ---
 
 ## Current Session
