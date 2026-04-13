@@ -196,6 +196,46 @@ Hi, I'm Callum, a young entrepreneur in Wales building multiple income streams. 
     - Feed summary into AI decision as extra context
     - Should improve trade quality significantly
 ---
+Dev Tools & Automation Setup
+Claude Code
+Install: npm install -g @anthropic-ai/claude-code
+Use instead of copy-pasting code into GitHub
+Run in terminal inside any repo folder
+Claude reads all files, edits directly, commits and pushes
+Railway auto-deploys on every push — no manual steps
+Cost: Included in Claude Pro ($20/month) — you likely already pay this
+
+CLAUDE.md (per repo memory)
+Create a file called CLAUDE.md in the root of each repo
+Paste the relevant section of this briefing into it
+Claude Code reads it automatically every session
+No more pasting briefing at the start of every chat
+Cost: Free — just a file in your repo
+
+Workflow Change (old vs new)
+Old: Ask Claude → copy output → paste into GitHub editor → commit → wait
+New: Open terminal in repo → run claude → describe change → Claude edits, commits, Railway deploys
+Key rule: Always paste full file contents when asking for code changes in chat
+Key rule: Ask for diffs not full rewrites when making small changes
+
+Claude in Chrome (optional, later)
+Browser extension — Claude can see and click your Railway, MongoDB, Twilio, Stripe dashboards
+Good for: checking logs, managing inventory, reviewing conversations hands-free
+Cost: Free beta currently
+Hold off until Claude Code workflow is solid
+
+Artifacts + Claude API (build tools in chat)
+Claude can build full interactive React/HTML apps in this chat window
+These can call the Claude API themselves — AI-powered mini apps with no backend needed
+Good for: landing pages, SMS message builders, client portals, internal tools
+Cost: Free to build here — Claude API calls use your existing CLAUDE_API_KEY
+
+Cost Summary
+Claude Code: free with Claude Pro (~$20/month)
+CLAUDE.md: completely free
+Claude in Chrome: free beta
+Artifacts: free to build, API calls use existing key
+Total extra cost: £0 — all covered by existing Claude Pro sub
 
 ## Current Session
 
