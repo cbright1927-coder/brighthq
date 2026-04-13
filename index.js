@@ -129,7 +129,7 @@ async function gatherData() {
   const clientStatuses = sales?.clientStatuses || {};
   const pendingAssignment = sales?.pendingAssignment || [];
 
-  const contacted = Math.max(0, Object.values(conversations).filter(c => c.messages && c.messages.length >= 1).length - closedDeals.length);(c => c.messages && c.messages.length >= 1).length;
+  const contacted = Math.max(0, Object.values(conversations).filter(c => c.messages && c.messages.length >= 1).length - closedDeals.length);
 const replied = Object.values(conversations).filter(c =>
     c.messages && c.messages.length > 1 &&
     c.messages[c.messages.length-1].role === 'user'
